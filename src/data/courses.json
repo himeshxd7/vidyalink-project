@@ -23,11 +23,6 @@
         { "module": 4, "title": "Data Structures", "content": "In-depth look at Lists, Dictionaries, and Tuples." },
         { "module": 5, "title": "Final Project", "content": "Building a small console-based application to apply all learned concepts." }
       ],
-      "materials": [
-      { "type": "pdf", "title": "Module 1 Notes.pdf" },
-      { "type": "video", "title": "Introduction to Variables.mp4" },
-      { "type": "image", "title": "Data Types Cheat Sheet.png" }
-    ],
       "requirements": [
         "A computer with Windows, macOS, or Linux.",
         "No prior programming experience is required."

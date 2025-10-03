@@ -2,8 +2,16 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const Navbar = ({ isLoggedIn }) => {
+  // --- THIS FUNCTION IS UPDATED FOR DARK MODE ---
   const toggleDarkMode = () => {
-    document.body.classList.toggle('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    if (isDarkMode) {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('vidyalink_theme', ''); // Set to light mode
+    } else {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('vidyalink_theme', 'dark-mode'); // Set to dark mode
+    }
   };
 
   return (

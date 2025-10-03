@@ -567,3 +567,169 @@ body.dark-mode .course-card:hover {
 body.dark-mode .material-link:hover {
     color: #90caf9;
 }
+.download-btn {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.download-btn:hover {
+    background-color: #5a6268;
+}
+/* --- Styles for New Tutor Page Layout --- */
+.syllabus-input-group {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--background-color);
+}
+
+.syllabus-input-group textarea {
+  margin-top: 10px;
+  min-height: 80px;
+}
+
+.module-materials {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.material-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--card-bg-color);
+  padding: 8px 12px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.remove-btn-small {
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  background-color: #7a8288;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.file-input-wrapper {
+  margin-top: 10px;
+}
+
+/* --- Styles for New Course Detail Page Layout --- */
+.module-materials-display {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: var(--background-color);
+  border-radius: 5px;
+}
+
+.material-display-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+/* --- Course Detail Page Overhaul --- */
+.course-detail-page {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.course-detail-header {
+  text-align: left;
+  padding: 2rem;
+  background-color: var(--card-bg-color);
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+.course-detail-header h1 { margin: 0; font-size: 2.5rem; }
+.tutor-info { color: var(--secondary-color); font-size: 1.1rem; margin-top: 0.5rem; }
+.course-meta { display: flex; align-items: center; gap: 1.5rem; margin-top: 1.5rem; }
+.course-price-detail { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+.course-mode-detail { padding: 0.5rem 1rem; border-radius: 5px; font-weight: bold; }
+.course-mode-detail.online { background-color: #d4edda; color: #155724; }
+.course-mode-detail.offline { background-color: #cce5ff; color: #004085; }
+
+.course-detail-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+.detail-section {
+  background-color: var(--card-bg-color);
+  padding: 2rem;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+.detail-section h2, .detail-section h3 {
+  margin-top: 0;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.learn-section ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.learn-section li {
+  line-height: 1.6;
+}
+
+.syllabus-item {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+.syllabus-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.syllabus-item strong {
+  font-size: 1.1rem;
+}
+.syllabus-item p {
+  margin: 0.5rem 0 0 0;
+  color: var(--secondary-color);
+}
+
+.sidebar-card ul {
+  padding-left: 20px;
+}
+.sidebar-card p {
+  margin: 0;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+@media (max-width: 992px) {
+  .course-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 768px) {
+  .learn-section ul {
+    grid-template-columns: 1fr;
+  }
+}

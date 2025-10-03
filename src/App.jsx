@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
@@ -14,25 +14,49 @@ import initialCourses from './data/courses.json';
 import initialUsers from './data/users.json';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedUser = localStorage.getItem('vidyalink_user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(currentUser));
   const [courses, setCourses] = useState(initialCourses);
   const [users, setUsers] = useState(initialUsers);
 
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('vidyalink_user', JSON.stringify(currentUser));
+      setIsLoggedIn(true);
+    } else {
+      localStorage.removeItem('vidyalink_user');
+      setIsLoggedIn(false);
+    }
+  }, [currentUser]);
+
+  // --- THIS IS THE NEW CODE FOR DARK MODE ---
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('vidyalink_theme');
+    if (savedTheme) {
+      document.body.className = savedTheme;
+    } else {
+      // If no theme is saved, default to dark mode
+      document.body.className = 'dark-mode';
+      localStorage.setItem('vidyalink_theme', 'dark-mode');
+    }
+  }, []); // Empty array ensures this runs only once on app load
+
   const handleLogin = (user) => {
-    setIsLoggedIn(true);
     setCurrentUser(user);
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
     setCurrentUser(null);
   };
 
   const handleAddCourse = (newCourse) => {
     setCourses(prevCourses => [newCourse, ...prevCourses]);
   };
-
+  
   const handleUpdateCourse = (updatedCourse) => {
     setCourses(courses.map(course => (course.id === updatedCourse.id ? updatedCourse : course)));
   };
@@ -58,7 +82,6 @@ function App() {
           
           <Route path="/course/:id" element={isLoggedIn ? <CourseDetailPage courses={courses} /> : <Navigate to="/login" />} />
 
-          {/* Updated Tutor Routes */}
           <Route 
             path="/tutor" 
             element={isLoggedIn ? <TutorPage onAddCourse={handleAddCourse} onUpdateCourse={handleUpdateCourse} currentUser={currentUser} courses={courses} /> : <Navigate to="/login" />} 

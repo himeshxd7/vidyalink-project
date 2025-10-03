@@ -14,16 +14,8 @@ const CourseDetailPage = ({ courses }) => {
     );
   }
 
+  // Use optional chaining for safety in case 'details' is missing
   const { details = {} } = course;
-
-  const getFileIcon = (type) => {
-    switch (type.toLowerCase()) {
-      case 'pdf': return '📄';
-      case 'video': return '🎥';
-      case 'image': return '🖼️';
-      default: return '🔗';
-    }
-  };
 
   return (
     <div className="page-content course-detail-page">
@@ -38,12 +30,8 @@ const CourseDetailPage = ({ courses }) => {
 
       <div className="course-detail-grid">
         <div className="main-content">
-          <div className="detail-section">
-            <h2>Course Description</h2>
-            <p>{course.description}</p>
-          </div>
-
-          {details.whatYouWillLearn && details.whatYouWillLearn.length > 0 && (
+          {/* What You'll Learn Section */}
+          {details.whatYouWillLearn && (
             <div className="detail-section learn-section">
               <h2>What you'll learn</h2>
               <ul>
@@ -54,7 +42,8 @@ const CourseDetailPage = ({ courses }) => {
             </div>
           )}
 
-          {details.syllabus && details.syllabus.length > 0 && (
+          {/* Syllabus Section */}
+          {details.syllabus && (
             <div className="detail-section syllabus-section">
               <h2>Course Syllabus</h2>
               {details.syllabus.map((item) => (
@@ -65,33 +54,11 @@ const CourseDetailPage = ({ courses }) => {
               ))}
             </div>
           )}
-          
-          {/* *** CORRECTED SECTION FOR COURSE MATERIALS *** */}
-          {details.materials && details.materials.length > 0 && (
-              <div className="detail-section materials-section">
-                  <h2>Course Materials</h2>
-                  <ul style={{ listStyleType: 'none', padding: 0 }}>
-                      {details.materials.map((item, index) => (
-                          <li key={index} style={{ marginBottom: '12px' }}>
-                            {/* The fix is to wrap the item in an anchor tag */}
-                            <a 
-                              href={item.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="material-link"
-                            >
-                              <span style={{ marginRight: '10px', fontSize: '1.2rem' }}>{getFileIcon(item.type)}</span>
-                              {item.title}
-                            </a>
-                          </li>
-                      ))}
-                  </ul>
-              </div>
-          )}
         </div>
 
         <div className="sidebar-content">
-          {details.requirements && details.requirements.length > 0 && (
+          {/* Requirements Section */}
+          {details.requirements && (
             <div className="detail-section sidebar-card">
               <h3>Requirements</h3>
               <ul>
@@ -102,6 +69,7 @@ const CourseDetailPage = ({ courses }) => {
             </div>
           )}
 
+          {/* Target Audience Section */}
           {details.targetAudience && (
             <div className="detail-section sidebar-card">
               <h3>Who this course is for</h3>
