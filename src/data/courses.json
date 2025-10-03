@@ -3,20 +3,67 @@
     "id": "course001",
     "title": "Introduction to Python Programming",
     "tutorId": "20240802485",
-    "skills": ["python", "coding", "data-science", "programming"],
-    "description": "This course covers the basics of Python, from variables and data types to functions and loops. No prior experience needed!",
+    "skills": ["python", "coding", "data-science", "programming", "basics"],
+    "description": "This course covers the fundamentals of Python, from variables and data types to functions and basic data structures. No prior experience needed! It's designed to get you from zero to your first functional program.",
     "mode": "Online",
     "price": 499,
-    "dateCreated": "2025-10-02"
+    "dateCreated": "2025-10-02",
+    "details": {
+      "whatYouWillLearn": [
+        "Understand the basic syntax and concepts of Python.",
+        "Write your own Python scripts and functions.",
+        "Work with fundamental data structures: lists, tuples, and dictionaries.",
+        "Grasp the basics of object-oriented programming.",
+        "Build a simple command-line application."
+      ],
+      "syllabus": [
+        { "module": 1, "title": "Getting Started", "content": "Installation, Hello World, Variables & Data Types." },
+        { "module": 2, "title": "Control Flow", "content": "Conditional statements (if/else) and loops (for/while)." },
+        { "module": 3, "title": "Functions", "content": "Defining and calling functions, parameters, and return values." },
+        { "module": 4, "title": "Data Structures", "content": "In-depth look at Lists, Dictionaries, and Tuples." },
+        { "module": 5, "title": "Final Project", "content": "Building a small console-based application to apply all learned concepts." }
+      ],
+      "materials": [
+      { "type": "pdf", "title": "Module 1 Notes.pdf" },
+      { "type": "video", "title": "Introduction to Variables.mp4" },
+      { "type": "image", "title": "Data Types Cheat Sheet.png" }
+    ],
+      "requirements": [
+        "A computer with Windows, macOS, or Linux.",
+        "No prior programming experience is required."
+      ],
+      "targetAudience": "Absolute beginners in programming or students from other fields looking to pick up a new skill."
+    }
   },
   {
     "id": "course002",
     "title": "Acoustic Guitar for Beginners",
     "tutorId": "20240802465",
-    "skills": ["guitar", "music", "hobby", "acoustic"],
-    "description": "Learn the basic chords, strumming patterns, and everything you need to play your first song on the guitar.",
+    "skills": ["guitar", "music", "hobby", "acoustic", "instrument"],
+    "description": "Learn the basic chords, strumming patterns, and everything you need to play your first song on the guitar. This course focuses on practical skills and building a solid foundation.",
     "mode": "Offline",
     "price": 600,
-    "dateCreated": "2025-10-03"
+    "dateCreated": "2025-10-03",
+    "details": {
+      "whatYouWillLearn": [
+        "How to properly hold and tune a guitar.",
+        "The most common open chords (G, C, D, Em, Am).",
+        "Essential strumming patterns for popular songs.",
+        "How to read guitar tablature (tabs).",
+        "Play at least one full song by the end of the course."
+      ],
+      "syllabus": [
+        { "module": 1, "title": "The Basics", "content": "Anatomy of the guitar, tuning, and proper posture." },
+        { "module": 2, "title": "First Chords", "content": "Learning the G, C, and D major chords." },
+        { "module": 3, "title": "Strumming Essentials", "content": "Down-up patterns and keeping rhythm." },
+        { "module": 4, "title": "Expanding Your Chord Vocabulary", "content": "Adding Em, Am, and F major chords." },
+        { "module": 5, "title": "Playing Your First Song", "content": "Putting it all together to play a popular tune." }
+      ],
+      "requirements": [
+        "An acoustic guitar (nylon or steel string).",
+        "A guitar tuner (can be a mobile app)."
+      ],
+      "targetAudience": "Anyone who has never picked up a guitar before or who has struggled to learn on their own."
+    }
   }
 ]

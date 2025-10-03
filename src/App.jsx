@@ -7,7 +7,8 @@ import AuthPage from './pages/AuthPage';
 import LearnPage from './pages/LearnPage';
 import TutorPage from './pages/TutorPage';
 import ProfilePage from './pages/ProfilePage';
-import CourseDetailPage from './pages/CourseDetailPage'; // 1. IMPORT THIS NEW PAGE
+import CourseDetailPage from './pages/CourseDetailPage';
+import EditCoursePage from './pages/EditCoursePage'; // Import the new page
 import './App.css';
 
 import initialCourses from './data/courses.json';
@@ -37,6 +38,10 @@ function App() {
     setUsers(prevUsers => [...prevUsers, newUser]);
   };
 
+  const handleUpdateCourse = (updatedCourse) => {
+    setCourses(courses.map(course => (course.id === updatedCourse.id ? updatedCourse : course)));
+  };
+
   return (
     <Router>
       <Navbar isLoggedIn={isLoggedIn} />
@@ -52,13 +57,18 @@ function App() {
           
           <Route path="/learn" element={isLoggedIn ? <LearnPage courses={courses} /> : <Navigate to="/login" />} />
           
-          {/* 2. ADD THIS NEW ROUTE FOR THE DETAIL PAGE */}
           <Route path="/course/:id" element={isLoggedIn ? <CourseDetailPage courses={courses} /> : <Navigate to="/login" />} />
 
           <Route path="/tutor" element={isLoggedIn ? <TutorPage onAddCourse={handleAddCourse} currentUser={currentUser} /> : <Navigate to="/login" />} />
+
           <Route 
             path="/profile" 
-            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} /> : <Navigate to="/login" />} 
+          />
+
+          <Route 
+            path="/edit-course/:id" 
+            element={isLoggedIn ? <EditCoursePage courses={courses} onUpdateCourse={handleUpdateCourse} /> : <Navigate to="/login" />} 
           />
         </Routes>
       </div>

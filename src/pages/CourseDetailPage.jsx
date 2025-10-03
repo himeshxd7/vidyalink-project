@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 
 const CourseDetailPage = ({ courses }) => {
-  const { id } = useParams(); // Gets the course ID from the URL
+  const { id } = useParams();
   const course = courses.find(c => c.id === id);
 
   if (!course) {
@@ -14,36 +14,80 @@ const CourseDetailPage = ({ courses }) => {
     );
   }
 
+  const { details = {} } = course;
+
   return (
     <div className="page-content course-detail-page">
       <div className="course-detail-header">
         <h1>{course.title}</h1>
-        <p className="tutor-info">Taught by PRN: {course.tutorId}</p>
-      </div>
-
-      <div className="course-detail-body">
+        <p className="tutor-info">Taught by Student Tutor (PRN: {course.tutorId})</p>
         <div className="course-meta">
           <span className="course-price-detail">₹{course.price}</span>
           <span className={`course-mode-detail ${course.mode.toLowerCase()}`}>{course.mode}</span>
         </div>
-        
-        <h2>About this course</h2>
-        <p className="course-description-full">{course.description}</p>
+      </div>
 
-        <h2>Skills you will gain</h2>
-        <div className="course-skills-detail">
-          {course.skills.map(skill => (
-            <span key={skill} className="skill-tag">{skill}</span>
-          ))}
+      <div className="course-detail-grid">
+        <div className="main-content">
+          <div className="detail-section">
+            <h2>Course Description</h2>
+            <p>{course.description}</p>
+          </div>
+
+          {details.whatYouWillLearn && (
+            <div className="detail-section learn-section">
+              <h2>What you'll learn</h2>
+              <ul>
+                {details.whatYouWillLearn.map((item, index) => (
+                  <li key={index}>✓ {item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {details.syllabus && details.syllabus.length > 0 && (
+            <div className="detail-section syllabus-section">
+              <h2>Course Syllabus</h2>
+              {details.syllabus.map((item) => (
+                <div key={item.module} className="syllabus-item">
+                  <strong>Module {item.module}: {item.title}</strong>
+                  <p>{item.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {details.materials && details.materials.length > 0 && (
+              <div className="detail-section materials-section">
+                  <h2>Course Materials</h2>
+                  <ul>
+                      {details.materials.map((item, index) => (
+                          <li key={index}><strong>[{item.type.toUpperCase()}]</strong> {item.title}</li>
+                      ))}
+                  </ul>
+              </div>
+          )}
         </div>
 
-        {course.mode === 'Online' && (
-          <div className="course-materials">
-            <h2>Course Materials</h2>
-            <p>Registered users can access uploaded PDFs, videos, and other materials here.</p>
-            {/* In a real app, you would list the materials here */}
-          </div>
-        )}
+        <div className="sidebar-content">
+          {details.requirements && (
+            <div className="detail-section sidebar-card">
+              <h3>Requirements</h3>
+              <ul>
+                {details.requirements.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {details.targetAudience && (
+            <div className="detail-section sidebar-card">
+              <h3>Who this course is for</h3>
+              <p>{details.targetAudience}</p>
+            </div>
+          )}
+        </div>
       </div>
 
       <NavLink to="/learn" className="back-link">← Back to All Courses</NavLink>

@@ -1,38 +1,54 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const TutorPage = ({ onAddCourse, currentUser }) => {
+const EditCoursePage = ({ courses, onUpdateCourse }) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const courseToEdit = courses.find(c => c.id === id);
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [skills, setSkills] = useState('');
   const [price, setPrice] = useState('');
-  const [mode, setMode] = useState('Offline'); // Default to Offline
-  const [materials, setMaterials] = useState([{ type: 'pdf', title: '' }]);
-  const [syllabus, setSyllabus] = useState([{ module: 1, title: '', content: '' }]);
-  const navigate = useNavigate();
+  const [mode, setMode] = useState('Offline');
+  const [materials, setMaterials] = useState([]);
+  const [syllabus, setSyllabus] = useState([]);
+
+  useEffect(() => {
+    if (courseToEdit) {
+      setTitle(courseToEdit.title);
+      setDescription(courseToEdit.description);
+      setSkills(courseToEdit.skills.join(', '));
+      setPrice(courseToEdit.price);
+      setMode(courseToEdit.mode);
+      setMaterials(courseToEdit.details?.materials || []);
+      setSyllabus(courseToEdit.details?.syllabus || []);
+    }
+  }, [courseToEdit]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const newCourse = {
-      id: `course${Date.now()}`,
+    const updatedCourse = {
+      ...courseToEdit,
       title,
-      tutorId: currentUser.username,
-      skills: skills.split(',').map(skill => skill.trim()),
       description,
-      mode,
+      skills: skills.split(',').map(skill => skill.trim()),
       price: Number(price),
-      dateCreated: new Date().toISOString().split('T')[0],
+      mode,
       details: {
-        materials: mode === 'Online' ? materials.filter(m => m.title.trim() !== '') : [],
-        syllabus: mode === 'Offline' ? syllabus.filter(s => s.title.trim() !== '') : [],
+        materials: mode === 'Online' ? materials : [],
+        syllabus: mode === 'Offline' ? syllabus : [],
       }
     };
-
-    onAddCourse(newCourse);
-    navigate('/learn');
+    onUpdateCourse(updatedCourse);
+    navigate('/profile');
   };
 
+  if (!courseToEdit) {
+    return <div>Course not found.</div>;
+  }
+
+  // Handlers for materials and syllabus (similar to TutorPage)
   const handleMaterialChange = (index, event) => {
     const values = [...materials];
     values[index][event.target.name] = event.target.value;
@@ -55,7 +71,7 @@ const TutorPage = ({ onAddCourse, currentUser }) => {
 
   return (
     <div className="page-content">
-      <h1>Publish Your Course</h1>
+      <h1>Edit Your Course</h1>
       <form onSubmit={handleSubmit} className="tutor-form">
         <div className="form-group">
           <label htmlFor="title">Course Title</label>
@@ -67,7 +83,7 @@ const TutorPage = ({ onAddCourse, currentUser }) => {
         </div>
         <div className="form-group">
           <label htmlFor="skills">Skills (comma-separated)</label>
-          <input type="text" id="skills" placeholder="e.g., python, coding, data-science" value={skills} onChange={(e) => setSkills(e.target.value)} required />
+          <input type="text" id="skills" value={skills} onChange={(e) => setSkills(e.target.value)} required />
         </div>
         <div className="form-group">
           <label htmlFor="price">Price (₹)</label>
@@ -91,7 +107,7 @@ const TutorPage = ({ onAddCourse, currentUser }) => {
                   <option value="video">Video</option>
                   <option value="image">Image</option>
                 </select>
-                <input type="text" name="title" placeholder="Material Title (e.g., 'Chapter 1 Slides.pdf')" value={material.title} onChange={e => handleMaterialChange(index, e)} style={{ flex: 1 }} />
+                <input type="text" name="title" placeholder="Material Title" value={material.title} onChange={e => handleMaterialChange(index, e)} required style={{ flex: 1 }} />
               </div>
             ))}
             <button type="button" onClick={handleAddMaterial}>Add Material</button>
@@ -103,18 +119,18 @@ const TutorPage = ({ onAddCourse, currentUser }) => {
             <label>Syllabus</label>
             {syllabus.map((item, index) => (
               <div key={index} className="syllabus-input" style={{ marginBottom: '15px' }}>
-                <input type="text" name="title" placeholder={`Module ${index + 1} Title`} value={item.title} onChange={e => handleSyllabusChange(index, e)} style={{ marginBottom: '5px' }} />
-                <textarea name="content" rows="2" placeholder="Module Content" value={item.content} onChange={e => handleSyllabusChange(index, e)}></textarea>
+                <input type="text" name="title" placeholder={`Module ${index + 1} Title`} value={item.title} onChange={e => handleSyllabusChange(index, e)} required style={{ marginBottom: '5px' }} />
+                <textarea name="content" rows="2" placeholder="Module Content" value={item.content} onChange={e => handleSyllabusChange(index, e)} required></textarea>
               </div>
             ))}
             <button type="button" onClick={handleAddSyllabus}>Add Module</button>
           </div>
         )}
 
-        <button type="submit" className="publish-btn">Publish Course</button>
+        <button type="submit" className="publish-btn" style={{ backgroundColor: '#007bff' }}>Update Course</button>
       </form>
     </div>
   );
 };
 
-export default TutorPage;
+export default EditCoursePage;
