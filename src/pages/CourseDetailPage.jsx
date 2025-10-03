@@ -16,6 +16,15 @@ const CourseDetailPage = ({ courses }) => {
 
   const { details = {} } = course;
 
+  const getFileIcon = (type) => {
+    switch (type.toLowerCase()) {
+      case 'pdf': return '📄';
+      case 'video': return '🎥';
+      case 'image': return '🖼️';
+      default: return '🔗';
+    }
+  };
+
   return (
     <div className="page-content course-detail-page">
       <div className="course-detail-header">
@@ -34,7 +43,7 @@ const CourseDetailPage = ({ courses }) => {
             <p>{course.description}</p>
           </div>
 
-          {details.whatYouWillLearn && (
+          {details.whatYouWillLearn && details.whatYouWillLearn.length > 0 && (
             <div className="detail-section learn-section">
               <h2>What you'll learn</h2>
               <ul>
@@ -56,13 +65,17 @@ const CourseDetailPage = ({ courses }) => {
               ))}
             </div>
           )}
-
+          
+          {/* Section to display uploaded materials */}
           {details.materials && details.materials.length > 0 && (
               <div className="detail-section materials-section">
                   <h2>Course Materials</h2>
-                  <ul>
+                  <ul style={{ listStyleType: 'none', padding: 0 }}>
                       {details.materials.map((item, index) => (
-                          <li key={index}><strong>[{item.type.toUpperCase()}]</strong> {item.title}</li>
+                          <li key={index} style={{ marginBottom: '10px' }}>
+                            <span style={{ marginRight: '10px', fontSize: '1.2rem' }}>{getFileIcon(item.type)}</span>
+                            {item.title}
+                          </li>
                       ))}
                   </ul>
               </div>
@@ -70,7 +83,7 @@ const CourseDetailPage = ({ courses }) => {
         </div>
 
         <div className="sidebar-content">
-          {details.requirements && (
+          {details.requirements && details.requirements.length > 0 && (
             <div className="detail-section sidebar-card">
               <h3>Requirements</h3>
               <ul>

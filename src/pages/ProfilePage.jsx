@@ -25,11 +25,13 @@ const ProfilePage = ({ user, onLogout, courses }) => {
             {myCourses.map(course => (
               <div key={course.id} className="course-card">
                 <h3>{course.title}</h3>
+                <p className="course-tutor">Tutor PRN: {course.tutorId}</p>
                 <div className="course-details">
                   <span className="course-price">₹{course.price}</span>
                   <span className={`course-mode ${course.mode.toLowerCase()}`}>{course.mode}</span>
                 </div>
-                <NavLink to={`/edit-course/${course.id}`} className="edit-course-link" style={{ marginTop: '1rem', display: 'inline-block' }}>
+                {/* Updated NavLink to point to /tutor/:id */}
+                <NavLink to={`/tutor/${course.id}`} className="edit-course-link" style={{ marginTop: '1rem', display: 'inline-block', color: 'var(--primary-color)', fontWeight: 'bold' }}>
                   Edit Course
                 </NavLink>
               </div>
