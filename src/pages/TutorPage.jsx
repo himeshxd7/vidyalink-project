@@ -5,7 +5,13 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
+  const [isUploading, setIsUploading] = useState(false);
 
+  // --- Your Cloudinary Configuration ---
+  const CLOUD_NAME = "dpcslds74";
+  const UPLOAD_PRESET = "vidyalink_preset";
+
+  // State variables remain the same
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [skills, setSkills] = useState('');
@@ -23,11 +29,50 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
         setSkills(courseToEdit.skills.join(', '));
         setPrice(courseToEdit.price);
         setMode(courseToEdit.mode);
+        // --- THE FIX: Corrected variable name ---
         setMaterials(courseToEdit.details?.materials || []);
         setSyllabus(courseToEdit.details?.syllabus || []);
       }
     }
   }, [id, courses, isEditing]);
+
+  const handleFileSelect = async (index, event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', UPLOAD_PRESET);
+
+    if (file.type === 'application/pdf') {
+      formData.append('resource_type', 'raw');
+    }
+    
+    const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      const finalUrl = data.secure_url;
+
+      const values = [...materials];
+      values[index].title = data.original_filename || file.name;
+      values[index].url = finalUrl;
+      values[index].public_id = data.public_id;
+      setMaterials(values);
+
+    } catch (error) {
+      console.error("Error uploading file to Cloudinary:", error);
+      alert("Error uploading file. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,23 +80,20 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
     if (isEditing) {
       const originalCourse = courses.find(c => c.id === id);
       const updatedCourse = {
-        ...originalCourse, // Start with the original course data
-        // Overwrite the properties that were edited in the form
+        ...originalCourse,
         title,
         description,
         skills: skills.split(',').map(skill => skill.trim()),
         price: Number(price),
         mode,
-        // *** THE FIX: Deep merge the 'details' object ***
         details: {
-          ...originalCourse.details, // Keep existing details (like requirements, etc.)
-          materials: mode === 'Online' ? materials.filter(m => m.title.trim() !== '') : originalCourse.details.materials, // Update materials only if in online mode
-          syllabus: mode === 'Offline' ? syllabus.filter(s => s.title.trim() !== '') : originalCourse.details.syllabus, // Update syllabus only if in offline mode
+          ...originalCourse.details,
+          materials: mode === 'Online' ? materials.filter(m => m.title.trim() !== '') : originalCourse.details.materials,
+          syllabus: mode === 'Offline' ? syllabus.filter(s => s.title.trim() !== '') : originalCourse.details.syllabus,
         }
       };
       onUpdateCourse(updatedCourse);
     } else {
-      // Logic for creating a new course (remains the same)
       const newCourse = {
         id: `course${Date.now()}`,
         dateCreated: new Date().toISOString().split('T')[0],
@@ -68,28 +110,17 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
       };
       onAddCourse(newCourse);
     }
-
-    navigate('/learn'); // Navigate to the learn page after submit
+    navigate('/learn');
   };
-  
-  // Handlers for materials and syllabus (no changes here)
+
   const handleMaterialTypeChange = (index, event) => {
     const values = [...materials];
     values[index].type = event.target.value;
     setMaterials(values);
   };
 
-  const handleFileSelect = (index, event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const values = [...materials];
-      values[index].title = file.name;
-      setMaterials(values);
-    }
-  };
-  
   const handleAddMaterial = () => {
-    setMaterials([...materials, { type: 'pdf', title: '' }]);
+    setMaterials([...materials, { type: 'pdf', title: '', url: '' }]);
   };
 
   const handleRemoveMaterial = (index) => {
@@ -97,7 +128,7 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
     values.splice(index, 1);
     setMaterials(values);
   };
-  
+
   const handleSyllabusChange = (index, event) => {
     const values = [...syllabus];
     values[index][event.target.name] = event.target.value;
@@ -118,7 +149,6 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
     <div className="page-content">
       <h1>{isEditing ? 'Edit Your Course' : 'Publish Your Course'}</h1>
       <form onSubmit={handleSubmit} className="tutor-form">
-        {/* All form fields remain the same */}
         <div className="form-group">
           <label htmlFor="title">Course Title</label>
           <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
@@ -146,6 +176,7 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
         {mode === 'Online' && (
           <div className="form-group">
             <label>Course Materials</label>
+            {isUploading && <p>Uploading file, please wait...</p>}
             {materials.map((material, index) => (
               <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center' }}>
                 <select name="type" value={material.type} onChange={e => handleMaterialTypeChange(index, e)}>
@@ -154,28 +185,20 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
                   <option value="image">Image</option>
                 </select>
                 <div style={{ flex: 1, border: '1px solid var(--border-color)', padding: '8px', borderRadius: '4px' }}>
-                  <input
-                    type="file"
-                    onChange={e => handleFileSelect(index, e)}
-                    accept={
-                      material.type === 'pdf' ? '.pdf' :
-                      material.type === 'video' ? 'video/*' :
-                      'image/*'
-                    }
-                  />
-                  {material.title && <p style={{ margin: '5px 0 0', fontSize: '0.9rem', color: 'var(--secondary-color)' }}>Selected: {material.title}</p>}
+                  {material.url ? (
+                    <p style={{ margin: 0 }}>Uploaded: {material.title}</p>
+                  ) : (
+                    <input type="file" onChange={e => handleFileSelect(index, e)} disabled={isUploading} />
+                  )}
                 </div>
                 <button type="button" onClick={() => handleRemoveMaterial(index)} className="remove-btn">Remove</button>
               </div>
             ))}
-            <button type="button" onClick={handleAddMaterial}>Add Material</button>
-            <p style={{fontSize: '0.8rem', color: 'var(--secondary-color)', marginTop: '10px'}}>
-              <em>Note: This is a frontend demonstration. In a real product, this would upload the file to a secure server.</em>
-            </p>
+            <button type="button" onClick={handleAddMaterial} disabled={isUploading}>Add Material</button>
           </div>
         )}
-        
-        {mode === 'Offline' && (
+
+         {mode === 'Offline' && (
           <div className="form-group">
             <label>Syllabus</label>
             {syllabus.map((item, index) => (
@@ -189,8 +212,8 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
           </div>
         )}
 
-        <button type="submit" className="publish-btn">
-          {isEditing ? 'Update Course' : 'Publish Course'}
+        <button type="submit" className="publish-btn" disabled={isUploading}>
+          {isUploading ? 'Uploading...' : isEditing ? 'Update Course' : 'Publish Course'}
         </button>
       </form>
     </div>

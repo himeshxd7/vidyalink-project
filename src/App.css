@@ -552,3 +552,18 @@ body.dark-mode .course-card:hover {
 .syllabus-input-group .remove-btn {
   margin-top: 10px;
 }
+.material-link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.material-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+body.dark-mode .material-link:hover {
+    color: #90caf9;
+}

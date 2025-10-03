@@ -66,15 +66,23 @@ const CourseDetailPage = ({ courses }) => {
             </div>
           )}
           
-          {/* Section to display uploaded materials */}
+          {/* *** CORRECTED SECTION FOR COURSE MATERIALS *** */}
           {details.materials && details.materials.length > 0 && (
               <div className="detail-section materials-section">
                   <h2>Course Materials</h2>
                   <ul style={{ listStyleType: 'none', padding: 0 }}>
                       {details.materials.map((item, index) => (
-                          <li key={index} style={{ marginBottom: '10px' }}>
-                            <span style={{ marginRight: '10px', fontSize: '1.2rem' }}>{getFileIcon(item.type)}</span>
-                            {item.title}
+                          <li key={index} style={{ marginBottom: '12px' }}>
+                            {/* The fix is to wrap the item in an anchor tag */}
+                            <a 
+                              href={item.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="material-link"
+                            >
+                              <span style={{ marginRight: '10px', fontSize: '1.2rem' }}>{getFileIcon(item.type)}</span>
+                              {item.title}
+                            </a>
                           </li>
                       ))}
                   </ul>
