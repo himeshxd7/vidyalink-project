@@ -3,20 +3,21 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
-import AuthPage from './pages/AuthPage'; // Import the new AuthPage
+import AuthPage from './pages/AuthPage';
 import LearnPage from './pages/LearnPage';
 import TutorPage from './pages/TutorPage';
 import ProfilePage from './pages/ProfilePage';
+import CourseDetailPage from './pages/CourseDetailPage'; // 1. IMPORT THIS NEW PAGE
 import './App.css';
 
 import initialCourses from './data/courses.json';
-import initialUsers from './data/users.json'; // Import initial users
+import initialUsers from './data/users.json';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [courses, setCourses] = useState(initialCourses);
-  const [users, setUsers] = useState(initialUsers); // Manage all users in state
+  const [users, setUsers] = useState(initialUsers);
 
   const handleLogin = (user) => {
     setIsLoggedIn(true);
@@ -32,7 +33,6 @@ function App() {
     setCourses(prevCourses => [newCourse, ...prevCourses]);
   };
   
-  // New function to handle user registration
   const handleSignUp = (newUser) => {
     setUsers(prevUsers => [...prevUsers, newUser]);
   };
@@ -45,13 +45,16 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           
-          {/* This route now handles both login and signup */}
           <Route 
             path="/login" 
             element={!isLoggedIn ? <AuthPage onLogin={handleLogin} onSignUp={handleSignUp} users={users} /> : <Navigate to="/learn" />} 
           />
           
           <Route path="/learn" element={isLoggedIn ? <LearnPage courses={courses} /> : <Navigate to="/login" />} />
+          
+          {/* 2. ADD THIS NEW ROUTE FOR THE DETAIL PAGE */}
+          <Route path="/course/:id" element={isLoggedIn ? <CourseDetailPage courses={courses} /> : <Navigate to="/login" />} />
+
           <Route path="/tutor" element={isLoggedIn ? <TutorPage onAddCourse={handleAddCourse} currentUser={currentUser} /> : <Navigate to="/login" />} />
           <Route 
             path="/profile" 

@@ -318,3 +318,117 @@ body.dark-mode .feature-card:hover {
   color: var(--primary-color);
   text-decoration: underline;
 }
+/* Add these styles to the bottom of src/App.css */
+
+/* Make Course Cards Clickable */
+.course-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.course-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+body.dark-mode .course-card:hover {
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+
+/* Course Detail Page Styles */
+.course-detail-page {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.course-detail-header {
+  text-align: center;
+  padding: 2rem;
+  background-color: var(--card-bg-color);
+  border-radius: 15px;
+  margin-bottom: 2rem;
+}
+
+.course-detail-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.tutor-info {
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+}
+
+.course-detail-body {
+  background-color: var(--card-bg-color);
+  padding: 2rem;
+  border-radius: 15px;
+}
+
+.course-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.course-price-detail {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.course-mode-detail {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.course-mode-detail.online {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.course-mode-detail.offline {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.course-description-full {
+  line-height: 1.7;
+  font-size: 1.1rem;
+}
+
+.course-detail-body h2 {
+  margin-top: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.course-skills-detail {
+  margin-top: 1rem;
+}
+
+.course-materials {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: var(--background-color);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 5px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 2rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: bold;
+}
