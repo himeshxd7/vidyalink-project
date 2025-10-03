@@ -1,9 +1,12 @@
-import React from 'react';
-import { useParams, NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, NavLink, useNavigate } from 'react-router-dom';
 
-const CourseDetailPage = ({ courses }) => {
+const CourseDetailPage = ({ courses, onEnroll, enrolledCourses }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const course = courses.find(c => c.id === id);
+  const [showQr, setShowQr] = useState(false);
+  const [showEnrolledPopup, setShowEnrolledPopup] = useState(false);
 
   if (!course) {
     return (
@@ -14,16 +17,51 @@ const CourseDetailPage = ({ courses }) => {
     );
   }
 
-  // Use optional chaining for safety in case 'details' is missing
-  const { details = {} } = course;
+  const { details = {}, tutorContact = {} } = course;
+  const isEnrolled = enrolledCourses.some(c => c.id === course.id);
 
   const handleEnroll = () => {
-    // Implement enrollment logic here
-    alert('Enrollment feature coming soon!');
+    if (course.price > 0) {
+      setShowQr(true);
+    } else {
+      onEnroll(course);
+      setShowEnrolledPopup(true);
+      setTimeout(() => setShowEnrolledPopup(false), 3000);
+    }
+  };
+
+  const handlePaymentConfirmation = () => {
+    const confirmed = window.confirm("Please confirm that you have completed the payment.");
+    if (confirmed) {
+      setShowQr(false);
+      onEnroll(course);
+      setShowEnrolledPopup(true);
+      setTimeout(() => setShowEnrolledPopup(false), 3000);
+    }
+  };
+
+  const handleChat = () => {
+    navigate(`/chat/${course.tutorId}`);
   };
 
   return (
     <div className="page-content course-detail-page">
+      {showEnrolledPopup && (
+        <div className="enroll-popup">
+          <p>Successfully Enrolled!</p>
+        </div>
+      )}
+      {showQr && (
+        <div className="qr-modal">
+          <div className="qr-modal-content">
+            <h3>Scan to Pay</h3>
+            <img src={course.qrCodeUrl} alt="UPI QR Code" />
+            <p>After paying, please click the button below to confirm.</p>
+            <button onClick={handlePaymentConfirmation}>Confirm Payment</button>
+            <button onClick={() => setShowQr(false)}>Close</button>
+          </div>
+        </div>
+      )}
       <div className="course-detail-header">
         <h1>{course.title}</h1>
         <p className="tutor-info">Taught by Student Tutor (PRN: {course.tutorId})</p>
@@ -31,14 +69,20 @@ const CourseDetailPage = ({ courses }) => {
           <span className="course-price-detail">{course.price > 0 ? `₹${course.price}` : 'Free'}</span>
           <span className={`course-mode-detail ${course.mode.toLowerCase()}`}>{course.mode}</span>
         </div>
-        <button className="enroll-btn" onClick={handleEnroll}>
-          {course.price > 0 ? `Buy Now for ₹${course.price}` : 'Enroll for Free'}
-        </button>
+        {isEnrolled ? (
+          <div className="enrolled-actions">
+            <button className="enroll-btn enrolled" disabled>Enrolled</button>
+            <button className="chat-btn" onClick={handleChat}>Chat with Tutor</button>
+          </div>
+        ) : (
+          <button className="enroll-btn" onClick={handleEnroll}>
+            {course.price > 0 ? `Buy Now for ₹${course.price}` : 'Enroll for Free'}
+          </button>
+        )}
       </div>
 
       <div className="course-detail-grid">
         <div className="main-content">
-          {/* What You'll Learn Section */}
           {details.whatYouWillLearn && (
             <div className="detail-section learn-section">
               <h2>What you'll learn</h2>
@@ -50,7 +94,6 @@ const CourseDetailPage = ({ courses }) => {
             </div>
           )}
 
-          {/* Syllabus Section */}
           {details.syllabus && (
             <div className="detail-section syllabus-section">
               <h2>Course Syllabus</h2>
@@ -58,6 +101,16 @@ const CourseDetailPage = ({ courses }) => {
                 <div key={item.module} className="syllabus-item">
                   <strong>Module {item.module}: {item.title}</strong>
                   <p>{item.content}</p>
+                  {isEnrolled && item.materials && item.materials.length > 0 && (
+                    <div className="module-materials-display">
+                      <h4>Module Materials:</h4>
+                      {item.materials.map((material, index) => (
+                        <div key={index} className="material-display-item">
+                          <a href={material.url} target="_blank" rel="noopener noreferrer">{material.title}</a>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -65,7 +118,15 @@ const CourseDetailPage = ({ courses }) => {
         </div>
 
         <div className="sidebar-content">
-          {/* Requirements Section */}
+          {isEnrolled && (
+            <div className="detail-section sidebar-card">
+              <h3>Tutor Contact</h3>
+              <p><strong>Name:</strong> {tutorContact.name}</p>
+              <p><strong>Email:</strong> {tutorContact.email}</p>
+              <p><strong>Phone/WhatsApp:</strong> {tutorContact.phone}</p>
+            </div>
+          )}
+
           {details.requirements && (
             <div className="detail-section sidebar-card">
               <h3>Requirements</h3>
@@ -77,7 +138,6 @@ const CourseDetailPage = ({ courses }) => {
             </div>
           )}
 
-          {/* Target Audience Section */}
           {details.targetAudience && (
             <div className="detail-section sidebar-card">
               <h3>Who this course is for</h3>

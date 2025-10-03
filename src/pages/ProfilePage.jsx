@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 
-const ProfilePage = ({ user, onLogout, courses }) => {
+const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses, onUnenroll }) => {
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
@@ -34,6 +34,7 @@ const ProfilePage = ({ user, onLogout, courses }) => {
                 <NavLink to={`/tutor/${course.id}`} className="edit-course-link" style={{ marginTop: '1rem', display: 'inline-block', color: 'var(--primary-color)', fontWeight: 'bold' }}>
                   Edit Course
                 </NavLink>
+                <button onClick={() => onDeleteCourse(course.id)} className="delete-course-btn">Delete Course</button>
               </div>
             ))}
           </div>
@@ -43,8 +44,24 @@ const ProfilePage = ({ user, onLogout, courses }) => {
       </div>
 
       <div className="enrolled-courses" style={{ marginTop: '2rem' }}>
-        <h3>Courses Enrolled</h3>
-        <p>This feature is coming soon!</p>
+        <h2>Courses Enrolled</h2>
+        {enrolledCourses.length > 0 ? (
+          <div className="course-grid">
+            {enrolledCourses.map(course => (
+              <div key={course.id} className="course-card">
+                <h3>{course.title}</h3>
+                <p className="course-tutor">Tutor PRN: {course.tutorId}</p>
+                <div className="course-details">
+                  <span className="course-price">₹{course.price}</span>
+                  <span className={`course-mode ${course.mode.toLowerCase()}`}>{course.mode}</span>
+                </div>
+                <button onClick={() => onUnenroll(course.id)} className="unenroll-btn">Unenroll</button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>You have not enrolled in any courses yet.</p>
+        )}
       </div>
 
       <button onClick={handleLogoutClick} className="logout-btn" style={{ marginTop: '2rem' }}>

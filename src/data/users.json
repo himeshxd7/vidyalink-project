@@ -1,10 +1,16 @@
 [
   {
     "username": "20240802485",
-    "password": "growth"
+    "password": "growth",
+    "name": "Alex Doe",
+    "email": "alex.doe@example.com",
+    "phone": "123-456-7890"
   },
   {
     "username": "20240802465",
-    "password": "mindit"
+    "password": "mindit",
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "phone": "098-765-4321"
   }
 ]

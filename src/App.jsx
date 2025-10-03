@@ -8,6 +8,7 @@ import LearnPage from './pages/LearnPage';
 import TutorPage from './pages/TutorPage';
 import ProfilePage from './pages/ProfilePage';
 import CourseDetailPage from './pages/CourseDetailPage';
+import ChatPage from './pages/ChatPage'; // Import the new ChatPage component
 import './App.css';
 
 import initialCourses from './data/courses.json';
@@ -22,6 +23,10 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(currentUser));
   const [courses, setCourses] = useState(initialCourses);
   const [users, setUsers] = useState(initialUsers);
+  const [enrolledCourses, setEnrolledCourses] = useState(() => {
+    const savedEnrolledCourses = localStorage.getItem('vidyalink_enrolled_courses');
+    return savedEnrolledCourses ? JSON.parse(savedEnrolledCourses) : [];
+  });
 
   useEffect(() => {
     if (currentUser) {
@@ -32,6 +37,10 @@ function App() {
       setIsLoggedIn(false);
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    localStorage.setItem('vidyalink_enrolled_courses', JSON.stringify(enrolledCourses));
+  }, [enrolledCourses]);
 
   // --- THIS IS THE NEW CODE FOR DARK MODE ---
   useEffect(() => {
@@ -61,8 +70,22 @@ function App() {
     setCourses(courses.map(course => (course.id === updatedCourse.id ? updatedCourse : course)));
   };
 
+  const handleDeleteCourse = (courseId) => {
+    setCourses(courses.filter(course => course.id !== courseId));
+  };
+
   const handleSignUp = (newUser) => {
     setUsers(prevUsers => [...prevUsers, newUser]);
+  };
+
+  const handleEnroll = (course) => {
+    if (!enrolledCourses.find(c => c.id === course.id)) {
+      setEnrolledCourses([...enrolledCourses, course]);
+    }
+  };
+
+  const handleUnenroll = (courseId) => {
+    setEnrolledCourses(enrolledCourses.filter(course => course.id !== courseId));
   };
 
   return (
@@ -80,7 +103,10 @@ function App() {
           
           <Route path="/learn" element={isLoggedIn ? <LearnPage courses={courses} /> : <Navigate to="/login" />} />
           
-          <Route path="/course/:id" element={isLoggedIn ? <CourseDetailPage courses={courses} /> : <Navigate to="/login" />} />
+          <Route 
+            path="/course/:id" 
+            element={isLoggedIn ? <CourseDetailPage courses={courses} onEnroll={handleEnroll} enrolledCourses={enrolledCourses} /> : <Navigate to="/login" />} 
+          />
 
           <Route 
             path="/tutor" 
@@ -93,7 +119,12 @@ function App() {
           
           <Route 
             path="/profile" 
-            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} /> : <Navigate to="/login" />} 
+            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} onDeleteCourse={handleDeleteCourse} enrolledCourses={enrolledCourses} onUnenroll={handleUnenroll} /> : <Navigate to="/login" />} 
+          />
+
+          <Route 
+            path="/chat/:tutorId"
+            element={isLoggedIn ? <ChatPage /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

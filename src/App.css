@@ -295,6 +295,26 @@ body.dark-mode .feature-card:hover {
 /* Profile Page */
 .profile-details { background-color: var(--card-bg-color); padding: 2rem; border-radius: 8px; margin-bottom: 2rem; }
 .logout-btn { background-color: var(--logout-btn-bg); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+.delete-course-btn {
+  background-color: var(--logout-btn-bg);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+.unenroll-btn {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
 
 /* Tutor Form */
 .tutor-form { max-width: 700px; margin: 0 auto; padding: 2rem; background: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: 8px; }
@@ -302,6 +322,31 @@ body.dark-mode .feature-card:hover {
 .tutor-form label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
 .tutor-form input, .tutor-form textarea, .tutor-form select { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; background-color: var(--background-color); color: var(--text-color); font-size: 1rem; }
 .publish-btn { width: 100%; padding: 0.75rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold; }
+.qr-size-note {
+  font-size: 0.8rem;
+  color: var(--secondary-color);
+  margin-bottom: 0.5rem;
+}
+.qr-code-preview {
+  margin-top: 1rem;
+  text-align: center;
+}
+.qr-code-preview img {
+  max-width: 150px;
+  border: 1px solid var(--border-color);
+  padding: 5px;
+  border-radius: 5px;
+}
+.remove-qr-btn {
+  display: block;
+  margin: 0.5rem auto 0;
+  background-color: var(--logout-btn-bg);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 @media (max-width: 768px) {
   .features-grid, .features-list { grid-template-columns: 1fr; }
@@ -735,7 +780,7 @@ body.dark-mode .material-link:hover {
 }
 /* --- Enroll Button --- */
 .enroll-btn {
-  background-color: var(--primary-color);
+  background-color: #dc3545;
   color: white;
   padding: 0.75rem 1.5rem;
   border: none;
@@ -748,5 +793,134 @@ body.dark-mode .material-link:hover {
 }
 
 .enroll-btn:hover {
-  background-color: #e02b1e;
+  background-color: #c82333;
+}
+
+.enroll-btn.enrolled {
+  background-color: #28a745;
+  cursor: not-allowed;
+}
+
+.enroll-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  z-index: 1001;
+  animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.qr-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1002;
+}
+
+.qr-modal-content {
+  background-color: var(--card-bg-color);
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.qr-modal-content img {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+}
+
+.enrolled-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.chat-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.chat-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Chat Page Styles */
+.chat-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.chat-box {
+  background-color: var(--card-bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  height: 400px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.chat-message {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  max-width: 70%;
+}
+
+.chat-message.tutor {
+  background-color: var(--background-color);
+  align-self: flex-start;
+}
+
+.chat-message.student {
+  background-color: var(--primary-color);
+  color: white;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.chat-form {
+  display: flex;
+}
+
+.chat-form input {
+  flex-grow: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px 0 0 4px;
+}
+
+.chat-form button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
 }

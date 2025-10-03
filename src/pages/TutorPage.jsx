@@ -18,8 +18,13 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
   const [price, setPrice] = useState('');
   const [isFree, setIsFree] = useState(false);
   const [mode, setMode] = useState('Offline');
-  // Syllabus is now the core for course content, containing its own materials
   const [syllabus, setSyllabus] = useState([]);
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
+  const [tutorContact, setTutorContact] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
 
   useEffect(() => {
     if (isEditing) {
@@ -31,17 +36,17 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
         setPrice(courseToEdit.price);
         setIsFree(courseToEdit.price === 0);
         setMode(courseToEdit.mode);
-        // Ensure syllabus exists and has a materials array for each module
         const syllabusWithMaterials = courseToEdit.details?.syllabus?.map(module => ({
           ...module,
           materials: module.materials || []
         })) || [];
         setSyllabus(syllabusWithMaterials);
+        setQrCodeUrl(courseToEdit.qrCodeUrl || '');
+        setTutorContact(courseToEdit.tutorContact || { name: '', email: '', phone: '' });
       }
     }
   }, [id, courses, isEditing]);
 
-  // --- Main upload handler ---
   const handleFileSelect = async (moduleIndex, event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -59,7 +64,7 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
       if (data.error) throw new Error(data.error.message);
 
       const newMaterial = {
-        type: data.resource_type, // 'image' or 'video'
+        type: data.resource_type,
         title: data.original_filename || file.name,
         url: data.secure_url,
         public_id: data.public_id,
@@ -77,7 +82,49 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
     }
   };
 
-  // --- Syllabus and Material Management ---
+  const handleQrCodeUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const image = new Image();
+      image.onload = async () => {
+        if (image.width !== 619 || image.height !== 619) {
+          alert('QR code image must be 619x619 pixels.');
+          return;
+        }
+
+        setIsUploading(true);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', UPLOAD_PRESET);
+
+        const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+        try {
+          const response = await fetch(url, { method: 'POST', body: formData });
+          const data = await response.json();
+          if (data.error) throw new Error(data.error.message);
+
+          setQrCodeUrl(data.secure_url);
+
+        } catch (error) {
+          console.error("Cloudinary Upload Error:", error);
+          alert(`Error uploading file: ${error.message}`);
+        } finally {
+          setIsUploading(false);
+        }
+      };
+      image.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveQrCode = () => {
+    setQrCodeUrl('');
+  };
+
   const handleSyllabusChange = (index, event) => {
     const values = [...syllabus];
     values[index][event.target.name] = event.target.value;
@@ -100,15 +147,20 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
     setSyllabus(newSyllabus);
   };
 
+  const handleContactChange = (event) => {
+    setTutorContact({
+      ...tutorContact,
+      [event.target.name]: event.target.value,
+    });
+  };
 
-  // --- Form Submission ---
   const handleSubmit = (e) => {
     e.preventDefault();
     const courseDetails = {
-        whatYouWillLearn: [], // Add other details if needed in the future
+        whatYouWillLearn: [],
         requirements: [],
         targetAudience: '',
-        syllabus: syllabus, // The syllabus now contains all content
+        syllabus: syllabus,
     };
 
     if (isEditing) {
@@ -119,6 +171,8 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
         price: isFree ? 0 : Number(price),
         mode,
         details: courseDetails,
+        qrCodeUrl,
+        tutorContact,
       };
       onUpdateCourse(updatedCourse);
     } else {
@@ -130,6 +184,8 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
         description, mode,
         price: isFree ? 0 : Number(price),
         details: courseDetails,
+        qrCodeUrl,
+        tutorContact,
       };
       onAddCourse(newCourse);
     }
@@ -182,11 +238,23 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
           </div>
         </div>
         {!isFree && (
-          <div className="form-group">
-            <label htmlFor="price">Price (₹)</label>
-            {/* THE FIX: Added min="0" to prevent negative prices */}
-            <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required min="0" />
-          </div>
+          <>
+            <div className="form-group">
+              <label htmlFor="price">Price (₹)</label>
+              <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required min="0" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="qrCode">Upload UPI QR Code</label>
+              <p className="qr-size-note">QR code image should be a square of 619x619 pixels.</p>
+              <input type="file" id="qrCode" onChange={handleQrCodeUpload} accept="image/*" />
+              {qrCodeUrl && (
+                <div className="qr-code-preview">
+                  <img src={qrCodeUrl} alt="QR Code" />
+                  <button type="button" onClick={handleRemoveQrCode} className="remove-qr-btn">Remove QR Code</button>
+                </div>
+              )}
+            </div>
+          </>
         )}
         <div className="form-group">
           <label htmlFor="mode">Course Mode</label>
@@ -194,6 +262,14 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
             <option value="Offline">Offline (In-person)</option>
             <option value="Online">Online (Materials provided)</option>
           </select>
+        </div>
+
+        {/* --- Tutor Contact Info --- */}
+        <div className="form-group">
+          <label>Tutor Contact Information</label>
+          <input type="text" name="name" placeholder="Full Name" value={tutorContact.name} onChange={handleContactChange} required />
+          <input type="email" name="email" placeholder="Email" value={tutorContact.email} onChange={handleContactChange} required />
+          <input type="text" name="phone" placeholder="Phone/WhatsApp" value={tutorContact.phone} onChange={handleContactChange} required />
         </div>
 
         {/* --- Course Content Section (Modules & Materials) --- */}
@@ -219,7 +295,7 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
                                 type="file"
                                 onChange={e => handleFileSelect(moduleIndex, e)}
                                 disabled={isUploading}
-                                accept="image/*,video/*" // THE FIX: No more PDF
+                                accept="image/*,video/*"
                             />
                         }
                     </div>
