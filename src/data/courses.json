@@ -1,0 +1,22 @@
+[
+  {
+    "id": "course001",
+    "title": "Introduction to Python Programming",
+    "tutorId": "20240802485",
+    "skills": ["python", "coding", "data-science", "programming"],
+    "description": "This course covers the basics of Python, from variables and data types to functions and loops. No prior experience needed!",
+    "mode": "Online",
+    "price": 499,
+    "dateCreated": "2025-10-02"
+  },
+  {
+    "id": "course002",
+    "title": "Acoustic Guitar for Beginners",
+    "tutorId": "20240802465",
+    "skills": ["guitar", "music", "hobby", "acoustic"],
+    "description": "Learn the basic chords, strumming patterns, and everything you need to play your first song on the guitar.",
+    "mode": "Offline",
+    "price": 600,
+    "dateCreated": "2025-10-03"
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "hero": {
+    "headline": "Unlock Your Campus Potential.",
+    "subheadline": "VidyaLink is our exclusive peer-to-peer learning network. Find skilled student tutors for any subject, or share your own knowledge and build your profile.",
+    "cta": "Explore Courses"
+  },
+  "features": {
+    "title": "A Smarter Way to Learn",
+    "items": [
+      {
+        "id": 1,
+        "icon": "🔍",
+        "title": "Discover Skills",
+        "description": "Search for any skill, from complex academic subjects to creative hobbies, and find peers ready to help."
+      },
+      {
+        "id": 2,
+        "icon": "🎓",
+        "title": "Become a Tutor",
+        "description": "Showcase your expertise. Publish courses, set your own price, and start sharing your knowledge with the campus community."
+      },
+      {
+        "id": 3,
+        "icon": "✅",
+        "title": "Faculty Endorsed",
+        "description": "Look for courses endorsed by our faculty for a stamp of approval on quality and credibility."
+      }
+    ]
+  },
+  "cta_section": {
+    "headline": "Ready to Start Your Learning Journey?",
+    "subheadline": "Join the community today and transform the way you learn and grow on campus.",
+    "button_text": "Get Started Now"
+  }
+}

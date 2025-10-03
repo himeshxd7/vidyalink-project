@@ -1,0 +1,320 @@
+/* --- Global Styles & Variables --- */
+:root {
+  --background-color: #f4f7f9;
+  --text-color: #333;
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --card-bg-color: #ffffff;
+  --border-color: #e0e0e0;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  --logout-btn-bg: #dc3545;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* --- Dark Mode Variables --- */
+body.dark-mode {
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --primary-color: #64b5f6;
+  --secondary-color: #a0a0a0;
+  --card-bg-color: #1e1e1e;
+  --border-color: #333;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  --logout-btn-bg: #f44336;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Navbar --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--card-bg-color);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow);
+}
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--primary-color);
+}
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+}
+.navbar-links a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+  padding-bottom: 5px;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom 0.2s, color 0.2s;
+}
+.navbar-links a.active, .navbar-links a:hover {
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+.navbar-actions {
+  display: flex;
+  align-items: center;
+}
+.get-started-btn {
+  background-color: var(--primary-color);
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-right: 1rem;
+  font-weight: 500;
+  border: none;
+  transition: background-color 0.3s;
+}
+.get-started-btn:hover {
+  background-color: #0056b3;
+}
+.dark-mode-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+/* --- New Futuristic Home Page Styles --- */
+.futuristic-home .hero-section {
+  text-align: center;
+  padding: 6rem 1rem;
+  background: linear-gradient(45deg, rgba(0, 123, 255, 0.1), rgba(0, 123, 255, 0));
+  border-radius: 15px;
+  margin-top: 2rem;
+  animation: fadeIn 1s ease-out;
+}
+.hero-headline {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: -webkit-linear-gradient(45deg, var(--primary-color), #333);
+  -webkit-background-clip: text;
+  background-clip: text; /* Add this line */
+  -webkit-text-fill-color: transparent;
+}
+
+body.dark-mode .hero-headline {
+  background: -webkit-linear-gradient(45deg, var(--primary-color), #eee);
+  -webkit-background-clip: text;
+  background-clip: text; /* And also add this line */
+}
+
+.hero-subheadline {
+  font-size: 1.25rem;
+  color: var(--secondary-color);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.hero-cta {
+  background: var(--primary-color);
+  color: white;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);
+}
+.hero-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 25px rgba(0, 123, 255, 0.4);
+}
+
+.features-section {
+  text-align: center;
+  padding: 5rem 1rem;
+}
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  font-weight: 700;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  align-items: stretch;
+}
+.feature-card {
+  background-color: var(--card-bg-color);
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+body.dark-mode .feature-card:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.feature-card:nth-child(2) { animation-delay: 0.2s; }
+.feature-card:nth-child(3) { animation-delay: 0.4s; }
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.feature-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.feature-description {
+  color: var(--secondary-color);
+  line-height: 1.6;
+}
+
+.cta-section {
+  text-align: center;
+  background-color: var(--card-bg-color);
+  padding: 4rem 2rem;
+  margin: 4rem 0;
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+}
+.cta-button {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+.cta-button:hover {
+  transform: scale(1.05);
+}
+
+/* --- New Futuristic About Page Styles --- */
+.futuristic-about .about-header {
+  text-align: center;
+  padding: 4rem 1rem;
+  animation: fadeIn 1s;
+}
+.futuristic-about .about-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+}
+.futuristic-about .subtitle {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+.futuristic-about section {
+  background: var(--card-bg-color);
+  padding: 3rem;
+  margin-bottom: 2rem;
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+}
+.futuristic-about h2 {
+  font-size: 2rem;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+.futuristic-about p {
+  line-height: 1.7;
+  color: var(--secondary-color);
+}
+.features-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.feature-item h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+.roles-container {
+  display: flex;
+  gap: 2rem;
+}
+.role-card {
+  flex: 1;
+}
+
+/* --- Other Existing Styles --- */
+.page-content { padding: 2rem 0; }
+
+/* Login Form */
+.login-container { display: flex; justify-content: center; align-items: center; padding: 2rem; }
+.login-form { width: 100%; max-width: 400px; padding: 2rem; background: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: 8px; }
+.form-group { margin-bottom: 1.5rem; }
+.login-form label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+.login-form input { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; }
+.login-form button { width: 100%; padding: 0.75rem; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+.error-message { color: #dc3545; text-align: center; margin-bottom: 1rem; }
+.form-footer { text-align: center; margin-top: 1rem; font-size: 0.9rem; }
+
+/* Learn Page */
+.search-bar { width: 100%; padding: 0.75rem; font-size: 1rem; margin-bottom: 2rem; border-radius: 5px; border: 1px solid var(--border-color); box-sizing: border-box; }
+.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.course-card { background: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; }
+.course-tutor { font-size: 0.9rem; color: #888; }
+.course-description { flex-grow: 1; }
+.course-details { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+.course-price { font-weight: bold; font-size: 1.2rem; }
+.course-mode { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+.course-mode.online { background-color: #d4edda; color: #155724; }
+.course-mode.offline { background-color: #cce5ff; color: #004085; }
+.course-skills { margin-top: 1rem; }
+.skill-tag { display: inline-block; background-color: var(--primary-color); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.8rem; margin-right: 0.5rem; margin-top: 0.5rem; }
+
+/* Profile Page */
+.profile-details { background-color: var(--card-bg-color); padding: 2rem; border-radius: 8px; margin-bottom: 2rem; }
+.logout-btn { background-color: var(--logout-btn-bg); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+
+/* Tutor Form */
+.tutor-form { max-width: 700px; margin: 0 auto; padding: 2rem; background: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: 8px; }
+.tutor-form .form-group { margin-bottom: 1.5rem; }
+.tutor-form label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+.tutor-form input, .tutor-form textarea, .tutor-form select { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; background-color: var(--background-color); color: var(--text-color); font-size: 1rem; }
+.publish-btn { width: 100%; padding: 0.75rem; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold; }
+
+@media (max-width: 768px) {
+  .features-grid, .features-list { grid-template-columns: 1fr; }
+  .roles-container { flex-direction: column; }
+  .hero-headline { font-size: 2.5rem; }
+}
+
+/* Add this to the bottom of your App.css */
+.form-footer {
+  cursor: pointer;
+}
+
+.form-footer span {
+  color: var(--primary-color);
+  text-decoration: underline;
+}

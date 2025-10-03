@@ -1,0 +1,44 @@
+{
+  "header": {
+    "title": "About VidyaLink",
+    "subtitle": "By Students, For Students."
+  },
+  "mission": {
+    "title": "Our Mission",
+    "content": "VidyaLink was born from a simple idea: the most valuable knowledge on campus is often sitting in the minds of our peers. We wanted to create a trusted, centralized platform to unlock that knowledge. Our mission is to build a collaborative learning community where every student has the power to both learn and teach. We replace scattered forum posts and word-of-mouth searches with a structured, safe, and reliable system for skill sharing."
+  },
+  "features_section": {
+    "title": "Platform Features",
+    "features": [
+      {
+        "name": "Peer-to-Peer Marketplace",
+        "description": "A dedicated space for students to publish and enroll in courses. Tutors can set their price and choose between online (with uploaded materials like videos and PDFs) or offline (live, in-person) sessions."
+      },
+      {
+        "name": "Intelligent Search",
+        "description": "Our powerful search bar allows learners to instantly find courses based on specific skills (e.g., 'data science', 'guitar'). Courses are tagged with relevant skills to ensure accurate results."
+      },
+      {
+        "name": "Faculty Endorsement System",
+        "description": "To ensure quality, our esteemed faculty members can review and endorse student tutors. Endorsed tutors are highlighted, giving learners a clear indicator of trusted and verified expertise."
+      },
+      {
+        "name": "Secure Authentication",
+        "description": "User accounts are tied to unique College PRNs, ensuring that VidyaLink remains an exclusive and secure platform for our campus community."
+      },
+      {
+        "name": "Personalized Profiles",
+        "description": "Every user has a profile to track their published courses or enrolled sessions, creating a personalized learning dashboard."
+      },
+      {
+        "name": "Dark Mode",
+        "description": "A sleek dark mode with a smooth transition, designed for comfortable viewing during late-night study sessions."
+      }
+    ]
+  },
+  "roles": {
+    "title": "Our Community",
+    "student_role": "Students are the heart of VidyaLink. As Learners, they can discover new skills and get academic help. As Tutors, they can monetize their expertise, build a reputation, and gain valuable teaching experience.",
+    "faculty_role": "Faculty members play a crucial role as mentors and curators. By endorsing skilled students, they guide learners toward high-quality content and help recognize and reward student talent on campus."
+  }
+}
