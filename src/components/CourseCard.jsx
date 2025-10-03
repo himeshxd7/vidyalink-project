@@ -9,7 +9,7 @@ const CourseCard = ({ course }) => {
         <p className="course-tutor">Tutor PRN: {course.tutorId}</p>
         <p className="course-description">{course.description}</p>
         <div className="course-details">
-          <span className="course-price">₹{course.price}</span>
+          <span className="course-price">{course.price > 0 ? `₹${course.price}` : 'Free'}</span>
           <span className={`course-mode ${course.mode.toLowerCase()}`}>{course.mode}</span>
         </div>
         <div className="course-skills">

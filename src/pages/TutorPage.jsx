@@ -16,6 +16,7 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
   const [description, setDescription] = useState('');
   const [skills, setSkills] = useState('');
   const [price, setPrice] = useState('');
+  const [isFree, setIsFree] = useState(false);
   const [mode, setMode] = useState('Offline');
   // Syllabus is now the core for course content, containing its own materials
   const [syllabus, setSyllabus] = useState([]);
@@ -28,6 +29,7 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
         setDescription(courseToEdit.description);
         setSkills(courseToEdit.skills.join(', '));
         setPrice(courseToEdit.price);
+        setIsFree(courseToEdit.price === 0);
         setMode(courseToEdit.mode);
         // Ensure syllabus exists and has a materials array for each module
         const syllabusWithMaterials = courseToEdit.details?.syllabus?.map(module => ({
@@ -114,7 +116,8 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
       const updatedCourse = {
         ...originalCourse, title, description,
         skills: skills.split(',').map(skill => skill.trim()),
-        price: Number(price), mode,
+        price: isFree ? 0 : Number(price),
+        mode,
         details: courseDetails,
       };
       onUpdateCourse(updatedCourse);
@@ -125,7 +128,7 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
         title, tutorId: currentUser.username,
         skills: skills.split(',').map(skill => skill.trim()),
         description, mode,
-        price: Number(price),
+        price: isFree ? 0 : Number(price),
         details: courseDetails,
       };
       onAddCourse(newCourse);
@@ -151,10 +154,40 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
           <input type="text" id="skills" placeholder="e.g., python, coding" value={skills} onChange={(e) => setSkills(e.target.value)} required />
         </div>
         <div className="form-group">
-          <label htmlFor="price">Price (₹)</label>
-          {/* THE FIX: Added min="0" to prevent negative prices */}
-          <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required min="0" />
+          <label>Course Fee</label>
+          <div>
+            <input
+              type="radio"
+              id="free"
+              name="fee"
+              value="free"
+              checked={isFree}
+              onChange={() => {
+                setIsFree(true);
+                setPrice('');
+              }}
+            />
+            <label htmlFor="free">Free</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              id="paid"
+              name="fee"
+              value="paid"
+              checked={!isFree}
+              onChange={() => setIsFree(false)}
+            />
+            <label htmlFor="paid">Paid</label>
+          </div>
         </div>
+        {!isFree && (
+          <div className="form-group">
+            <label htmlFor="price">Price (₹)</label>
+            {/* THE FIX: Added min="0" to prevent negative prices */}
+            <input type="number" id="price" value={price} onChange={(e) => setPrice(e.target.value)} required min="0" />
+          </div>
+        )}
         <div className="form-group">
           <label htmlFor="mode">Course Mode</label>
           <select id="mode" value={mode} onChange={(e) => setMode(e.target.value)}>

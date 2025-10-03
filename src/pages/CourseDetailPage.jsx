@@ -17,15 +17,23 @@ const CourseDetailPage = ({ courses }) => {
   // Use optional chaining for safety in case 'details' is missing
   const { details = {} } = course;
 
+  const handleEnroll = () => {
+    // Implement enrollment logic here
+    alert('Enrollment feature coming soon!');
+  };
+
   return (
     <div className="page-content course-detail-page">
       <div className="course-detail-header">
         <h1>{course.title}</h1>
         <p className="tutor-info">Taught by Student Tutor (PRN: {course.tutorId})</p>
         <div className="course-meta">
-          <span className="course-price-detail">₹{course.price}</span>
+          <span className="course-price-detail">{course.price > 0 ? `₹${course.price}` : 'Free'}</span>
           <span className={`course-mode-detail ${course.mode.toLowerCase()}`}>{course.mode}</span>
         </div>
+        <button className="enroll-btn" onClick={handleEnroll}>
+          {course.price > 0 ? `Buy Now for ₹${course.price}` : 'Enroll for Free'}
+        </button>
       </div>
 
       <div className="course-detail-grid">
