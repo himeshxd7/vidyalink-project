@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-// We no longer import the static JSON file here
-// import courses from '../data/courses.json'; 
 import CourseCard from '../components/CourseCard';
 
-// The courses array is now passed in as a prop
-const LearnPage = ({ courses }) => { 
+const LearnPage = ({ courses, currentUser }) => { 
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredCourses = courses.filter(course =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.skills.some(skill =>
-      skill.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCourses = courses
+    .filter(course => course.tutorId !== currentUser.username) // Exclude user's own courses
+    .filter(course =>
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.skills.some(skill =>
+        skill.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     )
-  ).sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+    .sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
 
   return (
     <div className="page-content">

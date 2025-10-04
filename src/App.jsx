@@ -151,7 +151,7 @@ function App() {
             element={!isLoggedIn ? <AuthPage onLogin={handleLogin} onSignUp={handleSignUp} users={users} /> : <Navigate to="/learn" />} 
           />
           
-          <Route path="/learn" element={isLoggedIn ? <LearnPage courses={courses} /> : <Navigate to="/login" />} />
+          <Route path="/learn" element={isLoggedIn ? <LearnPage courses={courses} currentUser={currentUser} /> : <Navigate to="/login" />} />
           
           <Route 
             path="/course/:id" 
