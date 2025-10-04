@@ -9,19 +9,19 @@
     "items": [
       {
         "id": 1,
-        "icon": "🔍",
+        "icon": "fa-search",
         "title": "Discover Skills",
         "description": "Search for any skill, from complex academic subjects to creative hobbies, and find peers ready to help."
       },
       {
         "id": 2,
-        "icon": "🎓",
+        "icon": "fa-graduation-cap",
         "title": "Become a Tutor",
         "description": "Showcase your expertise. Publish courses, set your own price, and start sharing your knowledge with the campus community."
       },
       {
         "id": 3,
-        "icon": "✅",
+        "icon": "fa-check-circle",
         "title": "Faculty Endorsed",
         "description": "Look for courses endorsed by our faculty for a stamp of approval on quality and credibility."
       }
@@ -33,3 +33,4 @@
     "button_text": "Get Started Now"
   }
 }
+

@@ -3,6 +3,11 @@
     "username": "20240802485",
     "password": "growth",
     "name": "Alex Doe",
+    "age": 20,
+    "course": "BTECH CSE",
+    "year": 2,
+    "semester": 4,
+    "pfp": "https://i.pravatar.cc/150?u=alex",
     "email": "alex.doe@example.com",
     "phone": "123-456-7890",
     "notifications": [
@@ -13,6 +18,11 @@
     "username": "20240802465",
     "password": "mindit",
     "name": "Jane Smith",
+    "age": 21,
+    "course": "BTECH IT",
+    "year": 3,
+    "semester": 5,
+    "pfp": "https://i.pravatar.cc/150?u=jane",
     "email": "jane.smith@example.com",
     "phone": "098-765-4321",
     "notifications": []

@@ -2,6 +2,35 @@ import React, { useState } from 'react';
 import { useParams, NavLink, useNavigate } from 'react-router-dom';
 import StudentChatModal from './StudentChatModal';
 
+const Module = ({ item, isEnrolled }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="syllabus-item">
+      <div className="syllabus-header" onClick={() => setIsOpen(!isOpen)}>
+        <strong>Module {item.module}: {item.title}</strong>
+        <i className={`fas fa-chevron-${isOpen ? 'up' : 'down'}`}></i>
+      </div>
+      {isOpen && (
+        <div className="syllabus-content">
+          <p>{item.content}</p>
+          {isEnrolled && item.materials && item.materials.length > 0 && (
+            <div className="module-materials-display">
+              <h4>Module Materials:</h4>
+              {item.materials.map((material, index) => (
+                <div key={index} className="material-display-item">
+                  <a href={material.url} target="_blank" rel="noopener noreferrer">{material.title}</a>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+
 const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, messages, currentUser }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -110,20 +139,7 @@ const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, m
             <div className="detail-section syllabus-section">
               <h2>Course Syllabus</h2>
               {details.syllabus.map((item) => (
-                <div key={item.module} className="syllabus-item">
-                  <strong>Module {item.module}: {item.title}</strong>
-                  <p>{item.content}</p>
-                  {isEnrolled && item.materials && item.materials.length > 0 && (
-                    <div className="module-materials-display">
-                      <h4>Module Materials:</h4>
-                      {item.materials.map((material, index) => (
-                        <div key={index} className="material-display-item">
-                          <a href={material.url} target="_blank" rel="noopener noreferrer">{material.title}</a>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <Module key={item.module} item={item} isEnrolled={isEnrolled} />
               ))}
             </div>
           )}

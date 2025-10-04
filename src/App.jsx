@@ -140,7 +140,7 @@ function App() {
 
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} notifications={notifications.filter(n => n.tutorId === currentUser?.username && !n.read)} />
+      <Navbar isLoggedIn={isLoggedIn} notifications={notifications.filter(n => n.tutorId === currentUser?.username && !n.read)} currentUser={currentUser} />
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
