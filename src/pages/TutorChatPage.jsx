@@ -51,20 +51,29 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
     <div className="page-content tutor-chat-page">
       <div className="chat-layout">
         <div className="student-list">
-          <h3>Students in {course.title}</h3>
-          {students.map(student => {
-            const hasUnread = notifications.some(n => n.senderId === student && n.courseId === courseId && !n.read && n.recipientId === currentUser.username);
-            return (
-              <div
-                key={student}
-                className={`student-list-item ${selectedStudent === student ? 'selected' : ''}`}
-                onClick={() => setSelectedStudent(student)}
-              >
-                {student}
-                {hasUnread && <span className="new-message-badge">New</span>}
-              </div>
-            );
-          })}
+          <div className="chat-sidebar-header">
+            <h3><i className="fas fa-users"></i> Students</h3>
+            <p title={course.title}>{course.title}</p>
+          </div>
+          <div className="student-list-items">
+            {students.length > 0 ? (
+              students.map(student => {
+                const hasUnread = notifications.some(n => n.senderId === student && n.courseId === courseId && !n.read && n.recipientId === currentUser.username);
+                return (
+                  <div
+                    key={student}
+                    className={`student-list-item ${selectedStudent === student ? 'selected' : ''}`}
+                    onClick={() => setSelectedStudent(student)}
+                  >
+                    {student}
+                    {hasUnread && <span className="new-message-badge">New</span>}
+                  </div>
+                );
+              })
+            ) : (
+              <p className="no-students-message">No students have started a chat yet.</p>
+            )}
+          </div>
         </div>
         <div className="chat-area">
           {selectedStudent ? (
@@ -100,4 +109,4 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
   );
 };
 
-export default TutorChatPage;
+export default TutorChatPage; 
