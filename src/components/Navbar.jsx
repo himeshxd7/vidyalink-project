@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
-const Navbar = ({ isLoggedIn }) => {
-  // --- THIS FUNCTION IS UPDATED FOR DARK MODE ---
+const Navbar = ({ isLoggedIn, notifications }) => {
   const toggleDarkMode = () => {
     const isDarkMode = document.body.classList.contains('dark-mode');
     if (isDarkMode) {
@@ -13,6 +12,8 @@ const Navbar = ({ isLoggedIn }) => {
       localStorage.setItem('vidyalink_theme', 'dark-mode'); // Set to dark mode
     }
   };
+
+  const [showNotifications, setShowNotifications] = useState(false);
 
   return (
     <nav className="navbar">
@@ -29,6 +30,22 @@ const Navbar = ({ isLoggedIn }) => {
         )}
       </div>
       <div className="navbar-actions">
+        {isLoggedIn && notifications && notifications.length > 0 && (
+          <div className="notification-icon" onClick={() => setShowNotifications(!showNotifications)}>
+            🔔
+            <span className="notification-count">{notifications.length}</span>
+            {showNotifications && (
+              <div className="notification-dropdown">
+                {notifications.map((notif, index) => (
+                  <div key={index} className="notification-item">
+                    <p><strong>Course:</strong> {notif.courseId}</p>
+                    <p>{notif.message}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         {!isLoggedIn ? (
           <NavLink to="/login" className="get-started-btn">Get Started</NavLink>
         ) : (

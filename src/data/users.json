@@ -4,13 +4,17 @@
     "password": "growth",
     "name": "Alex Doe",
     "email": "alex.doe@example.com",
-    "phone": "123-456-7890"
+    "phone": "123-456-7890",
+    "notifications": [
+      { "courseId": "course001", "studentId": "student123", "message": "I have a question about module 2." }
+    ]
   },
   {
     "username": "20240802465",
     "password": "mindit",
     "name": "Jane Smith",
     "email": "jane.smith@example.com",
-    "phone": "098-765-4321"
+    "phone": "098-765-4321",
+    "notifications": []
   }
 ]

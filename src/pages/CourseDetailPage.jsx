@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useParams, NavLink, useNavigate } from 'react-router-dom';
+import StudentChatModal from './StudentChatModal';
 
-const CourseDetailPage = ({ courses, onEnroll, enrolledCourses }) => {
+const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, messages, currentUser }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const course = courses.find(c => c.id === id);
   const [showQr, setShowQr] = useState(false);
   const [showEnrolledPopup, setShowEnrolledPopup] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   if (!course) {
     return (
@@ -41,7 +43,7 @@ const CourseDetailPage = ({ courses, onEnroll, enrolledCourses }) => {
   };
 
   const handleChat = () => {
-    navigate(`/chat/${course.tutorId}`);
+    setIsChatOpen(true);
   };
 
   return (
@@ -50,6 +52,16 @@ const CourseDetailPage = ({ courses, onEnroll, enrolledCourses }) => {
         <div className="enroll-popup">
           <p>Successfully Enrolled!</p>
         </div>
+      )}
+      {isChatOpen && (
+        <StudentChatModal
+          tutorId={course.tutorId}
+          courseId={course.id}
+          messages={messages[course.id] || []}
+          onSendMessage={onSendMessage}
+          onClose={() => setIsChatOpen(false)}
+          currentUser={currentUser}
+        />
       )}
       {showQr && (
         <div className="qr-modal">

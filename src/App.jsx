@@ -8,7 +8,7 @@ import LearnPage from './pages/LearnPage';
 import TutorPage from './pages/TutorPage';
 import ProfilePage from './pages/ProfilePage';
 import CourseDetailPage from './pages/CourseDetailPage';
-import ChatPage from './pages/ChatPage'; // Import the new ChatPage component
+import TutorChatPage from './pages/TutorChatPage';
 import './App.css';
 
 import initialCourses from './data/courses.json';
@@ -27,6 +27,10 @@ function App() {
     const savedEnrolledCourses = localStorage.getItem('vidyalink_enrolled_courses');
     return savedEnrolledCourses ? JSON.parse(savedEnrolledCourses) : [];
   });
+  const [messages, setMessages] = useState(() => {
+    const savedMessages = localStorage.getItem('vidyalink_messages');
+    return savedMessages ? JSON.parse(savedMessages) : {};
+  });
 
   useEffect(() => {
     if (currentUser) {
@@ -42,17 +46,9 @@ function App() {
     localStorage.setItem('vidyalink_enrolled_courses', JSON.stringify(enrolledCourses));
   }, [enrolledCourses]);
 
-  // --- THIS IS THE NEW CODE FOR DARK MODE ---
   useEffect(() => {
-    const savedTheme = localStorage.getItem('vidyalink_theme');
-    if (savedTheme) {
-      document.body.className = savedTheme;
-    } else {
-      // If no theme is saved, default to dark mode
-      document.body.className = 'dark-mode';
-      localStorage.setItem('vidyalink_theme', 'dark-mode');
-    }
-  }, []); // Empty array ensures this runs only once on app load
+    localStorage.setItem('vidyalink_messages', JSON.stringify(messages));
+  }, [messages]);
 
   const handleLogin = (user) => {
     setCurrentUser(user);
@@ -88,9 +84,31 @@ function App() {
     setEnrolledCourses(enrolledCourses.filter(course => course.id !== courseId));
   };
 
+  const handleSendMessage = (courseId, message) => {
+    setMessages(prev => ({
+      ...prev,
+      [courseId]: [...(prev[courseId] || []), message]
+    }));
+
+    // Add a notification for the tutor
+    const course = courses.find(c => c.id === courseId);
+    if (course && currentUser.username !== course.tutorId) {
+      const tutor = users.find(u => u.username === course.tutorId);
+      if (tutor) {
+        const newNotification = {
+          courseId,
+          studentId: currentUser.username,
+          message: message.text,
+        };
+        // This part would ideally be an API call to update the tutor's notifications
+        console.log("New notification for tutor:", newNotification);
+      }
+    }
+  };
+
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn} notifications={currentUser ? users.find(u => u.username === currentUser.username)?.notifications : []} />
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -105,7 +123,7 @@ function App() {
           
           <Route 
             path="/course/:id" 
-            element={isLoggedIn ? <CourseDetailPage courses={courses} onEnroll={handleEnroll} enrolledCourses={enrolledCourses} /> : <Navigate to="/login" />} 
+            element={isLoggedIn ? <CourseDetailPage courses={courses} onEnroll={handleEnroll} enrolledCourses={enrolledCourses} onSendMessage={handleSendMessage} messages={messages} currentUser={currentUser} /> : <Navigate to="/login" />} 
           />
 
           <Route 
@@ -123,8 +141,8 @@ function App() {
           />
 
           <Route 
-            path="/chat/:tutorId"
-            element={isLoggedIn ? <ChatPage /> : <Navigate to="/login" />}
+            path="/tutor-chat/:courseId"
+            element={isLoggedIn ? <TutorChatPage messages={messages} onSendMessage={handleSendMessage} currentUser={currentUser} courses={courses} /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

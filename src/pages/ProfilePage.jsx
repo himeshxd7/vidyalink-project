@@ -9,7 +9,9 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
     navigate('/');
   };
 
-  const myCourses = courses.filter(course => course.tutorId === user?.username);
+  const handleCourseClick = (courseId) => {
+    navigate(`/tutor-chat/${courseId}`);
+  };
 
   return (
     <div className="page-content">
@@ -20,21 +22,17 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
 
       <div className="published-courses">
         <h2>Your Published Courses</h2>
-        {myCourses.length > 0 ? (
+        {courses.filter(c => c.tutorId === user.username).length > 0 ? (
           <div className="course-grid">
-            {myCourses.map(course => (
-              <div key={course.id} className="course-card">
+            {courses.filter(c => c.tutorId === user.username).map(course => (
+              <div key={course.id} className="course-card" onClick={() => handleCourseClick(course.id)}>
                 <h3>{course.title}</h3>
                 <p className="course-tutor">Tutor PRN: {course.tutorId}</p>
                 <div className="course-details">
                   <span className="course-price">₹{course.price}</span>
                   <span className={`course-mode ${course.mode.toLowerCase()}`}>{course.mode}</span>
                 </div>
-                {/* Updated NavLink to point to /tutor/:id */}
-                <NavLink to={`/tutor/${course.id}`} className="edit-course-link" style={{ marginTop: '1rem', display: 'inline-block', color: 'var(--primary-color)', fontWeight: 'bold' }}>
-                  Edit Course
-                </NavLink>
-                <button onClick={() => onDeleteCourse(course.id)} className="delete-course-btn">Delete Course</button>
+                <button className="manage-course-btn">Manage Course & Chats</button>
               </div>
             ))}
           </div>
@@ -48,14 +46,13 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
         {enrolledCourses.length > 0 ? (
           <div className="course-grid">
             {enrolledCourses.map(course => (
-              <div key={course.id} className="course-card">
-                <h3>{course.title}</h3>
-                <p className="course-tutor">Tutor PRN: {course.tutorId}</p>
-                <div className="course-details">
-                  <span className="course-price">₹{course.price}</span>
-                  <span className={`course-mode ${course.mode.toLowerCase()}`}>{course.mode}</span>
-                </div>
-                <button onClick={() => onUnenroll(course.id)} className="unenroll-btn">Unenroll</button>
+              <div key={course.id} className="course-card-link">
+                <NavLink to={`/course/${course.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div className="course-card">
+                    <h3>{course.title}</h3>
+                    <p className="course-tutor">Tutor PRN: {course.tutorId}</p>
+                  </div>
+                </NavLink>
               </div>
             ))}
           </div>
