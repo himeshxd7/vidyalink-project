@@ -112,35 +112,41 @@ function App() {
       [courseId]: [...(prev[courseId] || []), message]
     }));
 
-    const course = courses.find(c => c.id === courseId);
-    if (course && currentUser.username !== course.tutorId) {
-      const newNotification = {
-        id: Date.now(),
-        courseId,
-        studentId: currentUser.username,
-        tutorId: course.tutorId,
-        message: message.text,
-        read: false,
-      };
-      setNotifications(prev => [newNotification, ...prev]);
-    }
+    const newNotification = {
+      id: Date.now(),
+      courseId,
+      senderId: message.sender,
+      recipientId: message.recipient,
+      message: message.text,
+      read: false,
+    };
+    setNotifications(prev => [newNotification, ...prev]);
   };
 
-  const handleClearNotifications = (tutorId, courseId, studentId) => {
-    setNotifications(prev => prev.filter(n => {
-      if (courseId && studentId) {
-        return !(n.courseId === courseId && n.studentId === studentId && n.tutorId === tutorId);
-      }
-      if (tutorId) {
-        return n.tutorId !== tutorId;
-      }
-      return true;
-    }));
+  const handleClearNotifications = (courseIdToClear, studentIdToClear) => {
+    setNotifications(prev =>
+      prev.map(n =>
+        n.courseId === courseIdToClear &&
+        n.recipientId === currentUser.username &&
+        n.senderId === studentIdToClear
+          ? { ...n, read: true }
+          : n
+      )
+    );
   };
+  
+  const handleClearAllNotifications = () => {
+    setNotifications(prev =>
+      prev.map(n =>
+        n.recipientId === currentUser.username ? { ...n, read: true } : n
+      )
+    );
+  };
+
 
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} notifications={notifications.filter(n => n.tutorId === currentUser?.username && !n.read)} currentUser={currentUser} />
+      <Navbar isLoggedIn={isLoggedIn} notifications={notifications.filter(n => n.recipientId === currentUser?.username && !n.read)} currentUser={currentUser} courses={courses} />
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -155,7 +161,7 @@ function App() {
           
           <Route 
             path="/course/:id" 
-            element={isLoggedIn ? <CourseDetailPage courses={courses} onEnroll={handleEnroll} enrolledCourses={enrolledCourses} onSendMessage={handleSendMessage} messages={messages} currentUser={currentUser} /> : <Navigate to="/login" />} 
+            element={isLoggedIn ? <CourseDetailPage courses={courses} onEnroll={handleEnroll} enrolledCourses={enrolledCourses} onSendMessage={handleSendMessage} messages={messages} currentUser={currentUser} onClearNotifications={handleClearNotifications}/> : <Navigate to="/login" />} 
           />
 
           <Route 
@@ -169,7 +175,7 @@ function App() {
           
           <Route 
             path="/profile" 
-            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} onDeleteCourse={handleDeleteCourse} enrolledCourses={enrolledCourses} onUnenroll={handleUnenroll} notifications={notifications.filter(n => n.tutorId === currentUser?.username && !n.read)} onClearNotifications={handleClearNotifications} /> : <Navigate to="/login" />} 
+            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} onDeleteCourse={handleDeleteCourse} enrolledCourses={enrolledCourses} onUnenroll={handleUnenroll} notifications={notifications.filter(n => n.recipientId === currentUser?.username && !n.read)} onClearAllNotifications={handleClearAllNotifications} /> : <Navigate to="/login" />} 
           />
 
           <Route 

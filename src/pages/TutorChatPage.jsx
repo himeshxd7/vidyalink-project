@@ -9,7 +9,7 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
 
   useEffect(() => {
     if (courseId && selectedStudent) {
-      onClearNotifications(currentUser.username, courseId, selectedStudent);
+      onClearNotifications(courseId, selectedStudent);
     }
   }, [courseId, selectedStudent, onClearNotifications, currentUser.username]);
 
@@ -40,7 +40,7 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
         <div className="student-list">
           <h3>Students in {course.title}</h3>
           {students.map(student => {
-            const hasUnread = notifications.some(n => n.studentId === student && n.courseId === courseId && !n.read);
+            const hasUnread = notifications.some(n => n.senderId === student && n.courseId === courseId && !n.read && n.recipientId === currentUser.username);
             return (
               <div
                 key={student}

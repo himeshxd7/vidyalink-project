@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import NotificationDropdown from './NotificationDropdown';
 
-const Navbar = ({ isLoggedIn, notifications, currentUser }) => {
+const Navbar = ({ isLoggedIn, notifications, currentUser, courses }) => {
+  const [showNotifications, setShowNotifications] = useState(false);
+
   const toggleDarkMode = () => {
     document.body.classList.toggle('dark-mode');
     localStorage.setItem(
@@ -10,7 +13,6 @@ const Navbar = ({ isLoggedIn, notifications, currentUser }) => {
     );
   };
 
-  // Set initial theme
   React.useEffect(() => {
     const savedTheme = localStorage.getItem('vidyalink_theme');
     if (savedTheme === 'dark-mode') {
@@ -44,14 +46,30 @@ const Navbar = ({ isLoggedIn, notifications, currentUser }) => {
       <div className="navbar-actions">
         {isLoggedIn ? (
           <>
-            {notifications && notifications.length > 0 && (
-              <NavLink to="/profile" className="notification-icon" title="Notifications">
-                <i className="fas fa-bell"></i>
-                <span className="notification-count">{notifications.length}</span>
-              </NavLink>
-            )}
+            <div className="notification-container">
+              {notifications && notifications.length > 0 && (
+                <button
+                  className="notification-icon"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                >
+                  <i className="fas fa-bell"></i>
+                  <span className="notification-count">{notifications.length}</span>
+                </button>
+              )}
+              {showNotifications && (
+                <NotificationDropdown
+                  notifications={notifications}
+                  courses={courses}
+                  currentUser={currentUser}
+                />
+              )}
+            </div>
             <NavLink to="/profile" className="profile-link">
-              <img src={currentUser?.pfp || 'https://i.pravatar.cc/150'} alt="Profile" className="profile-pic-nav" />
+              <img
+                src={currentUser?.pfp || 'https://i.pravatar.cc/150'}
+                alt="Profile"
+                className="profile-pic-nav"
+              />
             </NavLink>
           </>
         ) : (
@@ -59,7 +77,11 @@ const Navbar = ({ isLoggedIn, notifications, currentUser }) => {
             Get Started
           </NavLink>
         )}
-        <button onClick={toggleDarkMode} className="dark-mode-toggle" title="Toggle Dark Mode">
+        <button
+          onClick={toggleDarkMode}
+          className="dark-mode-toggle"
+          title="Toggle Dark Mode"
+        >
           <i className="fas fa-moon"></i>
         </button>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, NavLink, useNavigate } from 'react-router-dom';
 import StudentChatModal from './StudentChatModal';
 
@@ -31,13 +31,20 @@ const Module = ({ item, isEnrolled }) => {
 };
 
 
-const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, messages, currentUser }) => {
+const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, messages, currentUser, onClearNotifications }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const course = courses.find(c => c.id === id);
   const [showQr, setShowQr] = useState(false);
   const [showEnrolledPopup, setShowEnrolledPopup] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  
+  useEffect(() => {
+    if (isChatOpen) {
+      onClearNotifications(id, course.tutorId);
+    }
+  }, [isChatOpen, id, course, onClearNotifications]);
+
 
   if (!course) {
     return (

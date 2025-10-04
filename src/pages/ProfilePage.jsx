@@ -99,26 +99,24 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
         </div>
       )}
 
-      {publishedCourses.length > 0 && (
-        <div className="notifications-section" style={{ marginTop: '2rem' }}>
-          <h2>Notifications</h2>
-          {notifications.length > 0 ? (
-            <>
-              <button onClick={() => onClearNotifications(user.username)} className="clear-notifications-btn">Clear All Notifications</button>
-              <div className="notification-list">
-                {notifications.map(notification => (
-                  <div key={notification.id} className="notification-item">
-                    <p><strong>New message in {courses.find(c => c.id === notification.courseId)?.title} from {notification.studentId}:</strong> {notification.message}</p>
-                    <NavLink to={`/tutor-chat/${notification.courseId}`} className="view-chat-btn">View Chat</NavLink>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <p>No new notifications.</p>
-          )}
-        </div>
-      )}
+      <div className="notifications-section" style={{ marginTop: '2rem' }}>
+        <h2>Notifications</h2>
+        {notifications.length > 0 ? (
+          <>
+            <button onClick={() => onClearNotifications(user.username)} className="clear-notifications-btn">Clear All Notifications</button>
+            <div className="notification-list">
+              {notifications.map(notification => (
+                <div key={notification.id} className="notification-item">
+                  <p><strong>New message in {courses.find(c => c.id === notification.courseId)?.title} from {notification.tutorId === user.username ? notification.studentId : notification.tutorId}:</strong> {notification.message}</p>
+                  <NavLink to={notification.tutorId === user.username ? `/tutor-chat/${notification.courseId}` : `/course/${notification.courseId}`} className="view-chat-btn">View Chat</NavLink>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p>No new notifications.</p>
+        )}
+      </div>
     </div>
   );
 };
