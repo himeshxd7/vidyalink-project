@@ -80,6 +80,7 @@ const Navbar = ({ isLoggedIn, notifications, currentUser, courses, showLoader })
         ) : (
           <NavLink to="/login" className="get-started-btn">
             Get Started
+            <span className="icon">→</span>
           </NavLink>
         )}
         <div className="toggle-switch">

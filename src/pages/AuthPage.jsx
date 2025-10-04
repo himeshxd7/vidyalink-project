@@ -43,12 +43,12 @@ const AuthPage = ({ onLogin, onSignUp, users }) => {
   };
 
   return (
-    <div className="login-container">
+    <div className="auth-container">
       {isSigningIn ? (
         // Sign In Form
-        <form onSubmit={handleSignInSubmit} className="login-form">
-          <h2>Sign In</h2>
-          <p>Use your college PRN and password to log in.</p>
+        <form onSubmit={handleSignInSubmit} className="auth-form">
+          <h2>Welcome Back!</h2>
+          <p>Sign in to continue your learning journey.</p>
           <div className="form-group">
             <label htmlFor="username">PRN (Username)</label>
             <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
@@ -65,9 +65,9 @@ const AuthPage = ({ onLogin, onSignUp, users }) => {
         </form>
       ) : (
         // Sign Up Form
-        <form onSubmit={handleSignUpSubmit} className="login-form">
-          <h2>Sign Up</h2>
-          <p>Create a new profile with your college PRN.</p>
+        <form onSubmit={handleSignUpSubmit} className="auth-form">
+          <h2>Join VidyaLink</h2>
+          <p>Create an account to start learning and teaching.</p>
            <div className="form-group">
             <label htmlFor="username">PRN (Username)</label>
             <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
@@ -79,7 +79,7 @@ const AuthPage = ({ onLogin, onSignUp, users }) => {
           {error && <p className="error-message">{error}</p>}
           <button type="submit">Create Account</button>
           <p className="form-footer" onClick={toggleForm}>
-            Do you have an account? <span>Sign in</span>
+            Already have an account? <span>Sign In</span>
           </p>
         </form>
       )}
