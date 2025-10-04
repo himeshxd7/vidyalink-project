@@ -15,7 +15,8 @@ const Navbar = ({ isLoggedIn, notifications, currentUser, courses }) => {
 
   React.useEffect(() => {
     const savedTheme = localStorage.getItem('vidyalink_theme');
-    if (savedTheme === 'dark-mode') {
+    // If a theme is saved and it's 'dark-mode', or if no theme is saved at all (first visit), apply dark mode.
+    if (savedTheme === 'dark-mode' || savedTheme === null) {
       document.body.classList.add('dark-mode');
     }
   }, []);
