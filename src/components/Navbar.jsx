@@ -1,23 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import NotificationDropdown from './NotificationDropdown';
 
 const Navbar = ({ isLoggedIn, notifications, currentUser, courses, showLoader }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
     showLoader();
     document.body.classList.toggle('dark-mode');
+    const darkMode = document.body.classList.contains('dark-mode');
+    setIsDarkMode(darkMode);
     localStorage.setItem(
       'vidyalink_theme',
-      document.body.classList.contains('dark-mode') ? 'dark-mode' : ''
+      darkMode ? 'dark-mode' : ''
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const savedTheme = localStorage.getItem('vidyalink_theme');
     if (savedTheme === 'dark-mode' || savedTheme === null) {
       document.body.classList.add('dark-mode');
+      setIsDarkMode(true);
     }
   }, []);
 
@@ -78,13 +82,17 @@ const Navbar = ({ isLoggedIn, notifications, currentUser, courses, showLoader })
             Get Started
           </NavLink>
         )}
-        <button
-          onClick={toggleDarkMode}
-          className="dark-mode-toggle"
-          title="Toggle Dark Mode"
-        >
-          <i className="fas fa-moon"></i>
-        </button>
+        <div className="toggle-switch">
+          <label className="switch-label">
+            <input
+              type="checkbox"
+              className="checkbox"
+              checked={isDarkMode}
+              onChange={toggleDarkMode}
+            />
+            <span className="slider"></span>
+          </label>
+        </div>
       </div>
     </nav>
   );
