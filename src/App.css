@@ -19,10 +19,33 @@
 body {
   margin: 0;
   font-family: var(--font-family);
-  background-color: var(--background-color);
   color: var(--text-color);
   transition: background-color 0.4s ease, color 0.4s ease;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+  /* --- CORRECTED BACKGROUND --- */
+  --gap: 5em;
+  --line: 1px;
+  --color: rgba(0, 0, 0, 0.1);
+
+  background-color: #f5f7fa; /* Fallback color */
+  background-image:
+    /* Grid Pattern */
+    linear-gradient(
+      -90deg,
+      transparent calc(var(--gap) - var(--line)),
+      var(--color) calc(var(--gap) - var(--line) + 1px),
+      var(--color) var(--gap)
+    ),
+    linear-gradient(
+      0deg,
+      transparent calc(var(--gap) - var(--line)),
+      var(--color) calc(var(--gap) - var(--line) + 1px),
+      var(--color) var(--gap)
+    ),
+    /* Original Gradient */
+    linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+  background-size: var(--gap) var(--gap), var(--gap) var(--gap), auto;
 }
 
 /* --- Dark Mode Variables --- */
@@ -35,7 +58,27 @@ body.dark-mode {
   --border-color: #333;
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   --logout-btn-bg: #f44336;
-  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+
+  /* --- CORRECTED DARK MODE BACKGROUND --- */
+  --color: rgba(255, 255, 255, 0.1); /* Lighter grid for dark mode */
+
+  background-color: #232526; /* Fallback color */
+  background-image:
+    /* Grid Pattern */
+    linear-gradient(
+      -90deg,
+      transparent calc(var(--gap) - var(--line)),
+      var(--color) calc(var(--gap) - var(--line) + 1px),
+      var(--color) var(--gap)
+    ),
+    linear-gradient(
+      0deg,
+      transparent calc(var(--gap) - var(--line)),
+      var(--color) calc(var(--gap) - var(--line) + 1px),
+      var(--color) var(--gap)
+    ),
+    /* Original Gradient */
+    linear-gradient(135deg, #232526 0%, #414345 100%);
 }
 
 .container {
