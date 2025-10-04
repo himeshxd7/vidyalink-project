@@ -18,6 +18,7 @@ const LearnPage = ({ courses, currentUser }) => {
     <div className="page-content">
       <h1>Discover Courses</h1>
       <div className="search-container">
+        <i className="fas fa-search search-icon"></i>
         <input
           type="text"
           placeholder="Search for a skill or course title..."

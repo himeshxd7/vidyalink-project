@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearNotifications, notifications }) => {
@@ -6,12 +6,19 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
   const course = courses.find(c => c.id === courseId);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [newMessage, setNewMessage] = useState('');
+  const chatBoxRef = useRef(null);
 
   useEffect(() => {
     if (courseId && selectedStudent) {
       onClearNotifications(courseId, selectedStudent);
     }
   }, [courseId, selectedStudent, onClearNotifications, currentUser.username]);
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [messages, selectedStudent]);
 
   if (!course) {
     return <div className="page-content">Course not found.</div>;
@@ -29,10 +36,15 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
       sender: currentUser.username,
       recipient: selectedStudent,
       text: newMessage,
-      timestamp: new Date().toISOString(),
     };
     onSendMessage(courseId, message);
     setNewMessage('');
+  };
+
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
@@ -57,10 +69,13 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
         <div className="chat-area">
           {selectedStudent ? (
             <>
-              <div className="chat-box">
-                {courseMessages.filter(m => (m.sender === selectedStudent && m.recipient === currentUser.username) || (m.sender === currentUser.username && m.recipient === selectedStudent)).map((message, index) => (
+              <div className="chat-box" ref={chatBoxRef}>
+                {courseMessages
+                  .filter(m => (m.sender === selectedStudent && m.recipient === currentUser.username) || (m.sender === currentUser.username && m.recipient === selectedStudent))
+                  .map((message, index) => (
                   <div key={index} className={`chat-message ${message.sender === currentUser.username ? 'sent' : 'received'}`}>
                     <p>{message.text}</p>
+                    <span className="chat-timestamp">{formatTimestamp(message.timestamp)}</span>
                   </div>
                 ))}
               </div>

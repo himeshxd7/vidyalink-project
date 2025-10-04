@@ -114,9 +114,14 @@ function App() {
   };
 
   const handleSendMessage = (courseId, message) => {
+    const messageWithTimestamp = {
+      ...message,
+      timestamp: new Date().toISOString(),
+    };
+
     setMessages(prev => ({
       ...prev,
-      [courseId]: [...(prev[courseId] || []), message]
+      [courseId]: [...(prev[courseId] || []), messageWithTimestamp]
     }));
 
     const newNotification = {
