@@ -120,16 +120,16 @@ const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, m
         </div>
 
         {isTutor ? (
-            <NavLink to={`/tutor/${course.id}`} className="btn btn-primary" style={{marginTop: '1rem'}}>
-              Manage Your Course
+            <NavLink to={`/tutor/${course.id}`} className="action-btn primary" style={{marginTop: '1rem'}}>
+              <i className="fas fa-edit"></i> Manage Course
             </NavLink>
           ) : isEnrolled ? (
             <div className="enrolled-actions">
-              <button className="enroll-btn enrolled" disabled>Enrolled</button>
-              <button className="chat-btn" onClick={handleChat}>Chat with Tutor</button>
+              <button className="action-btn success" disabled><i className="fas fa-check"></i> Enrolled</button>
+              <button className="action-btn primary" onClick={handleChat}><i className="fas fa-comments"></i> Chat with Tutor</button>
             </div>
           ) : (
-            <button className="enroll-btn" onClick={handleEnroll}>
+            <button className="action-btn danger" onClick={handleEnroll}>
               {course.price > 0 ? `Buy Now for ₹${course.price}` : 'Enroll for Free'}
             </button>
         )}

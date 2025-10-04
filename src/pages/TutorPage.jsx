@@ -249,10 +249,12 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
             )}
             <div className="form-group">
               <label htmlFor="mode">Course Mode</label>
-              <select id="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
-                <option value="Offline">Offline (In-person)</option>
-                <option value="Online">Online (Materials provided)</option>
-              </select>
+              <div className="custom-select-wrapper">
+                <select id="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
+                  <option value="Offline">Offline (In-person)</option>
+                  <option value="Online">Online (Materials provided)</option>
+                </select>
+              </div>
             </div>
         </div>
 

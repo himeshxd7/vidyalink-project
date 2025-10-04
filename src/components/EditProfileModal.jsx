@@ -65,7 +65,7 @@ const EditProfileModal = ({ user, onUpdateUser, onClose }) => {
             <label htmlFor="semester">Semester</label>
             <input type="number" id="semester" name="semester" value={formData.semester} onChange={handleChange} required />
           </div>
-          <button type="submit" className="publish-btn">Save Changes</button>
+          <button type="submit" className="publish-btn" style={{gridColumn: '1 / -1'}}>Save Changes</button>
         </form>
       </div>
     </div>

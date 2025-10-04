@@ -48,8 +48,12 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
           <p><strong>Phone:</strong> {user?.phone}</p>
         </div>
         <div className="profile-actions">
-          <button onClick={() => setIsEditModalOpen(true)} className="edit-profile-btn">Edit Profile</button>
-          <button onClick={handleLogoutClick} className="logout-btn">Log Out</button>
+          <button onClick={() => setIsEditModalOpen(true)} className="action-btn secondary">
+            <i className="fas fa-user-edit"></i> Edit Profile
+          </button>
+          <button onClick={handleLogoutClick} className="action-btn danger">
+            <i className="fas fa-sign-out-alt"></i> Log Out
+          </button>
         </div>
       </div>
 
@@ -72,8 +76,12 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
                     <span className={`course-mode ${course.mode.toLowerCase()}`}>{course.mode}</span>
                   </div>
                   <div className="tutor-actions">
-                    <NavLink to={`/tutor/${course.id}`} className="manage-course-btn">Edit Course</NavLink>
-                    <NavLink to={`/tutor-chat/${course.id}`} className="manage-course-btn">Messages</NavLink>
+                    <NavLink to={`/tutor/${course.id}`} className="action-btn secondary">
+                      <i className="fas fa-edit"></i> Edit
+                    </NavLink>
+                    <NavLink to={`/tutor-chat/${course.id}`} className="action-btn primary">
+                      <i className="fas fa-envelope"></i> Messages
+                    </NavLink>
                   </div>
                 </div>
               ))}
