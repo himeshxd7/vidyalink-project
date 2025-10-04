@@ -217,32 +217,16 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
             <h2>Pricing & Mode</h2>
             <div className="form-group">
               <label>Course Fee</label>
-              <div>
-                <input
-                  type="radio"
-                  id="free"
-                  name="fee"
-                  value="free"
-                  checked={isFree}
-                  onChange={() => {
-                    setIsFree(true);
-                    setPrice('');
-                  }}
-                />
-                <label htmlFor="free">Free</label>
-              </div>
-              <div>
-                <input
-                  type="radio"
-                  id="paid"
-                  name="fee"
-                  value="paid"
-                  checked={!isFree}
-                  onChange={() => setIsFree(false)}
-                />
-                <label htmlFor="paid">Paid</label>
+              <div className="fee-toggle">
+                <span>Paid</span>
+                <label className="fee-toggle-switch">
+                  <input type="checkbox" checked={isFree} onChange={() => setIsFree(!isFree)} />
+                  <span className="fee-toggle-slider"></span>
+                </label>
+                <span>Free</span>
               </div>
             </div>
+
             {!isFree && (
               <>
                 <div className="form-group">
@@ -252,6 +236,7 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
                 <div className="form-group">
                   <label htmlFor="qrCode">Upload UPI QR Code</label>
                   <p className="qr-size-note">QR code image should be a square of 619x619 pixels.</p>
+                  <label htmlFor="qrCode" className="custom-file-input">Choose File</label>
                   <input type="file" id="qrCode" onChange={handleQrCodeUpload} accept="image/*" />
                   {qrCodeUrl && (
                     <div className="qr-code-preview">
@@ -304,12 +289,16 @@ const TutorPage = ({ onAddCourse, onUpdateCourse, currentUser, courses }) => {
                     ))}
                     <div className="file-input-wrapper">
                         {isUploading ? <p>Uploading...</p> :
-                            <input
-                                type="file"
-                                onChange={e => handleFileSelect(moduleIndex, e)}
-                                disabled={isUploading}
-                                accept="image/*,video/*"
-                            />
+                            <>
+                              <label htmlFor={`file-upload-${moduleIndex}`} className="custom-file-input">Add Material</label>
+                              <input
+                                  id={`file-upload-${moduleIndex}`}
+                                  type="file"
+                                  onChange={e => handleFileSelect(moduleIndex, e)}
+                                  disabled={isUploading}
+                                  accept="image/*,video/*"
+                              />
+                            </>
                         }
                     </div>
                 </div>

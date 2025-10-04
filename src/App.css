@@ -1469,3 +1469,69 @@ body.dark-mode .material-link:hover {
   gap: 1rem;
   margin-left: auto;
 }
+
+/* --- IMPROVEMENTS START HERE --- */
+
+/* Modern Toggle Switch for Tutor Form */
+.fee-toggle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.fee-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+.fee-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.fee-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+.fee-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .fee-toggle-slider {
+  background-color: var(--primary-color);
+}
+input:checked + .fee-toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* Improved File Input */
+.custom-file-input {
+  border: 1px solid var(--border-color);
+  display: inline-block;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: var(--background-color);
+  transition: background-color 0.2s;
+}
+.custom-file-input:hover {
+  background-color: var(--border-color);
+}
+input[type="file"] {
+  display: none;
+}

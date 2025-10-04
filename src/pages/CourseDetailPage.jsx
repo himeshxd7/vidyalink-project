@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, NavLink, useNavigate } from 'react-router-dom';
+import { useParams, NavLink } from 'react-router-dom';
 import StudentChatModal from './StudentChatModal';
 
 const Module = ({ item, isEnrolled }) => {
@@ -33,7 +33,6 @@ const Module = ({ item, isEnrolled }) => {
 
 const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, messages, currentUser, onClearNotifications }) => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const course = courses.find(c => c.id === id);
   const [showQr, setShowQr] = useState(false);
   const [showEnrolledPopup, setShowEnrolledPopup] = useState(false);
@@ -57,6 +56,8 @@ const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, m
 
   const { details = {}, tutorContact = {} } = course;
   const isEnrolled = enrolledCourses.some(c => c.id === course.id);
+  const isTutor = currentUser?.username === course.tutorId;
+
 
   const handleEnroll = () => {
     if (course.price > 0) {
@@ -117,15 +118,20 @@ const CourseDetailPage = ({ courses, onEnroll, enrolledCourses, onSendMessage, m
           <span className="course-price-detail">{course.price > 0 ? `₹${course.price}` : 'Free'}</span>
           <span className={`course-mode-detail ${course.mode.toLowerCase()}`}>{course.mode}</span>
         </div>
-        {isEnrolled ? (
-          <div className="enrolled-actions">
-            <button className="enroll-btn enrolled" disabled>Enrolled</button>
-            <button className="chat-btn" onClick={handleChat}>Chat with Tutor</button>
-          </div>
-        ) : (
-          <button className="enroll-btn" onClick={handleEnroll}>
-            {course.price > 0 ? `Buy Now for ₹${course.price}` : 'Enroll for Free'}
-          </button>
+
+        {isTutor ? (
+            <NavLink to={`/tutor/${course.id}`} className="btn btn-primary" style={{marginTop: '1rem'}}>
+              Manage Your Course
+            </NavLink>
+          ) : isEnrolled ? (
+            <div className="enrolled-actions">
+              <button className="enroll-btn enrolled" disabled>Enrolled</button>
+              <button className="chat-btn" onClick={handleChat}>Chat with Tutor</button>
+            </div>
+          ) : (
+            <button className="enroll-btn" onClick={handleEnroll}>
+              {course.price > 0 ? `Buy Now for ₹${course.price}` : 'Enroll for Free'}
+            </button>
         )}
       </div>
 

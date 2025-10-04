@@ -26,10 +26,10 @@ function App() {
       const savedUsers = localStorage.getItem('vidyalink_users');
       return savedUsers ? JSON.parse(savedUsers) : initialUsers;
   });
-  const [enrolledCourses, setEnrolledCourses] = useState(() => {
-    const savedEnrolledCourses = localStorage.getItem('vidyalink_enrolled_courses');
-    return savedEnrolledCourses ? JSON.parse(savedEnrolledCourses) : [];
-  });
+  // The enrolledCourses state is now initialized as an empty array
+  // and will be populated based on the logged-in user.
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  
   const [messages, setMessages] = useState(() => {
     const savedMessages = localStorage.getItem('vidyalink_messages');
     return savedMessages ? JSON.parse(savedMessages) : {};
@@ -49,13 +49,29 @@ function App() {
     }
   }, [currentUser]);
   
+  // *** FIX: Load user-specific enrolled courses when the user logs in or changes ***
+  useEffect(() => {
+    if (currentUser) {
+      const allEnrollments = JSON.parse(localStorage.getItem('vidyalink_enrolled_by_user')) || {};
+      setEnrolledCourses(allEnrollments[currentUser.username] || []);
+    } else {
+      setEnrolledCourses([]); // Clear enrolled courses on logout
+    }
+  }, [currentUser]);
+
+  // *** FIX: Save enrolled courses to a user-specific key in localStorage ***
+  useEffect(() => {
+    if (currentUser && currentUser.username) {
+      const allEnrollments = JSON.parse(localStorage.getItem('vidyalink_enrolled_by_user')) || {};
+      allEnrollments[currentUser.username] = enrolledCourses;
+      localStorage.setItem('vidyalink_enrolled_by_user', JSON.stringify(allEnrollments));
+    }
+  }, [enrolledCourses, currentUser]);
+
+
   useEffect(() => {
     localStorage.setItem('vidyalink_users', JSON.stringify(users));
   }, [users]);
-
-  useEffect(() => {
-    localStorage.setItem('vidyalink_enrolled_courses', JSON.stringify(enrolledCourses));
-  }, [enrolledCourses]);
 
   useEffect(() => {
     localStorage.setItem('vidyalink_messages', JSON.stringify(messages));
@@ -103,7 +119,12 @@ function App() {
     setUsers(prevUsers => [...prevUsers, newUser]);
   };
 
+  // *** FIX: Added a check to prevent tutors from enrolling in their own course ***
   const handleEnroll = (course) => {
+    if (currentUser && course.tutorId === currentUser.username) {
+      alert("You cannot enroll in a course you created.");
+      return;
+    }
     if (!enrolledCourses.find(c => c.id === course.id)) {
       setEnrolledCourses([...enrolledCourses, course]);
     }
