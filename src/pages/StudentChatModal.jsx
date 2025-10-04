@@ -26,7 +26,7 @@ const StudentChatModal = ({ tutorId, courseId, messages, onSendMessage, onClose,
         </div>
         <div className="chat-box">
           {messages.map((message, index) => (
-            <div key={index} className={`chat-message ${message.sender === currentUser.username ? 'student' : 'tutor'}`}>
+            <div key={index} className={`chat-message ${message.sender === currentUser.username ? 'sent' : 'received'}`}>
               <p>{message.text}</p>
             </div>
           ))}

@@ -22,7 +22,10 @@ function App() {
   
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(currentUser));
   const [courses, setCourses] = useState(initialCourses);
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState(() => {
+      const savedUsers = localStorage.getItem('vidyalink_users');
+      return savedUsers ? JSON.parse(savedUsers) : initialUsers;
+  });
   const [enrolledCourses, setEnrolledCourses] = useState(() => {
     const savedEnrolledCourses = localStorage.getItem('vidyalink_enrolled_courses');
     return savedEnrolledCourses ? JSON.parse(savedEnrolledCourses) : [];
@@ -45,6 +48,10 @@ function App() {
       setIsLoggedIn(false);
     }
   }, [currentUser]);
+  
+  useEffect(() => {
+    localStorage.setItem('vidyalink_users', JSON.stringify(users));
+  }, [users]);
 
   useEffect(() => {
     localStorage.setItem('vidyalink_enrolled_courses', JSON.stringify(enrolledCourses));
@@ -142,6 +149,15 @@ function App() {
       )
     );
   };
+  
+  const handleUpdateUser = (updatedUser) => {
+      setCurrentUser(updatedUser);
+      setUsers(prevUsers =>
+          prevUsers.map(user =>
+              user.username === updatedUser.username ? updatedUser : user
+          )
+      );
+  };
 
 
   return (
@@ -175,7 +191,7 @@ function App() {
           
           <Route 
             path="/profile" 
-            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} onDeleteCourse={handleDeleteCourse} enrolledCourses={enrolledCourses} onUnenroll={handleUnenroll} notifications={notifications.filter(n => n.recipientId === currentUser?.username && !n.read)} onClearAllNotifications={handleClearAllNotifications} /> : <Navigate to="/login" />} 
+            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} onDeleteCourse={handleDeleteCourse} enrolledCourses={enrolledCourses} onUnenroll={handleUnenroll} notifications={notifications.filter(n => n.recipientId === currentUser?.username && !n.read)} onClearAllNotifications={handleClearAllNotifications} onUpdateUser={handleUpdateUser} /> : <Navigate to="/login" />} 
           />
 
           <Route 

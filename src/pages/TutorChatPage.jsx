@@ -18,7 +18,8 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
   }
 
   const courseMessages = messages[courseId] || [];
-  const students = [...new Set(courseMessages.map(m => m.sender))].filter(s => s !== currentUser.username);
+  const students = [...new Set(courseMessages.map(m => m.sender).concat(courseMessages.map(m => m.recipient)))].filter(s => s !== currentUser.username);
+
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -58,7 +59,7 @@ const TutorChatPage = ({ messages, onSendMessage, currentUser, courses, onClearN
             <>
               <div className="chat-box">
                 {courseMessages.filter(m => (m.sender === selectedStudent && m.recipient === currentUser.username) || (m.sender === currentUser.username && m.recipient === selectedStudent)).map((message, index) => (
-                  <div key={index} className={`chat-message ${message.sender === currentUser.username ? 'tutor' : 'student'}`}>
+                  <div key={index} className={`chat-message ${message.sender === currentUser.username ? 'sent' : 'received'}`}>
                     <p>{message.text}</p>
                   </div>
                 ))}

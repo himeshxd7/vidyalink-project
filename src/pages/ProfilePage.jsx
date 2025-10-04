@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
+import EditProfileModal from '../components/EditProfileModal';
 
-const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses, onUnenroll, notifications, onClearNotifications }) => {
+const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses, onUnenroll, notifications, onClearAllNotifications, onUpdateUser }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('published');
   const [enrolledTab, setEnrolledTab] = useState('all');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleLogoutClick = () => {
     onLogout();
@@ -28,6 +30,13 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
 
   return (
     <div className="page-content profile-page">
+      {isEditModalOpen && (
+        <EditProfileModal
+          user={user}
+          onUpdateUser={onUpdateUser}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
       <div className="profile-header">
         <img src={user?.pfp || 'https://i.pravatar.cc/150'} alt="Profile" className="profile-pic-large" />
         <div className="profile-info">
@@ -36,10 +45,12 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
           <p><strong>Course:</strong> {user?.course}</p>
           <p><strong>Year/Semester:</strong> {user?.year}/{user?.semester}</p>
           <p><strong>Age:</strong> {user?.age}</p>
+          <p><strong>Phone:</strong> {user?.phone}</p>
         </div>
-        <button onClick={handleLogoutClick} className="logout-btn">
-          Log Out
-        </button>
+        <div className="profile-actions">
+          <button onClick={() => setIsEditModalOpen(true)} className="edit-profile-btn">Edit Profile</button>
+          <button onClick={handleLogoutClick} className="logout-btn">Log Out</button>
+        </div>
       </div>
 
       <div className="profile-tabs">
@@ -60,7 +71,7 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
                     <span className="course-price">₹{course.price}</span>
                     <span className={`course-mode ${course.mode.toLowerCase()}`}>{course.mode}</span>
                   </div>
-                   <div className="tutor-actions">
+                  <div className="tutor-actions">
                     <NavLink to={`/tutor/${course.id}`} className="manage-course-btn">Edit Course</NavLink>
                     <NavLink to={`/tutor-chat/${course.id}`} className="manage-course-btn">Messages</NavLink>
                   </div>
@@ -85,11 +96,11 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
             <div className="course-grid">
               {filteredEnrolledCourses().map(course => (
                 <div key={course.id} className="course-card">
-                    <NavLink to={`/course/${course.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <h3>{course.title}</h3>
-                      <p className="course-tutor">Tutor PRN: {course.tutorId}</p>
-                    </NavLink>
-                    <button onClick={() => onUnenroll(course.id)} className="unenroll-btn">Unenroll</button>
+                  <NavLink to={`/course/${course.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <h3>{course.title}</h3>
+                    <p className="course-tutor">Tutor PRN: {course.tutorId}</p>
+                  </NavLink>
+                  <button onClick={() => onUnenroll(course.id)} className="unenroll-btn">Unenroll</button>
                 </div>
               ))}
             </div>
@@ -103,14 +114,24 @@ const ProfilePage = ({ user, onLogout, courses, onDeleteCourse, enrolledCourses,
         <h2>Notifications</h2>
         {notifications.length > 0 ? (
           <>
-            <button onClick={() => onClearNotifications(user.username)} className="clear-notifications-btn">Clear All Notifications</button>
+            <button onClick={onClearAllNotifications} className="clear-notifications-btn">Clear All Notifications</button>
             <div className="notification-list">
-              {notifications.map(notification => (
-                <div key={notification.id} className="notification-item">
-                  <p><strong>New message in {courses.find(c => c.id === notification.courseId)?.title} from {notification.tutorId === user.username ? notification.studentId : notification.tutorId}:</strong> {notification.message}</p>
-                  <NavLink to={notification.tutorId === user.username ? `/tutor-chat/${notification.courseId}` : `/course/${notification.courseId}`} className="view-chat-btn">View Chat</NavLink>
-                </div>
-              ))}
+              {notifications.map(notification => {
+                const course = courses.find(c => c.id === notification.courseId);
+                const isTutor = user.username === course?.tutorId;
+                const chatLink = isTutor ? `/tutor-chat/${notification.courseId}` : `/course/${notification.courseId}`;
+
+                return (
+                  <div key={notification.id} className="notification-item">
+                    <p>
+                      <strong>New message in {course?.title} from {notification.senderId}:</strong> {notification.message}
+                    </p>
+                    <NavLink to={chatLink} className="view-chat-btn">
+                      View Chat
+                    </NavLink>
+                  </div>
+                );
+              })}
             </div>
           </>
         ) : (
