@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import NotificationDropdown from './NotificationDropdown';
 
-const Navbar = ({ isLoggedIn, notifications, currentUser, courses }) => {
+const Navbar = ({ isLoggedIn, notifications, currentUser, courses, showLoader }) => {
   const [showNotifications, setShowNotifications] = useState(false);
 
   const toggleDarkMode = () => {
+    showLoader();
     document.body.classList.toggle('dark-mode');
     localStorage.setItem(
       'vidyalink_theme',
@@ -15,7 +16,6 @@ const Navbar = ({ isLoggedIn, notifications, currentUser, courses }) => {
 
   React.useEffect(() => {
     const savedTheme = localStorage.getItem('vidyalink_theme');
-    // If a theme is saved and it's 'dark-mode', or if no theme is saved at all (first visit), apply dark mode.
     if (savedTheme === 'dark-mode' || savedTheme === null) {
       document.body.classList.add('dark-mode');
     }

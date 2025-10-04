@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
@@ -9,12 +9,13 @@ import TutorPage from './pages/TutorPage';
 import ProfilePage from './pages/ProfilePage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import TutorChatPage from './pages/TutorChatPage';
+import Loader from './components/Loader';
 import './App.css';
 
 import initialCourses from './data/courses.json';
 import initialUsers from './data/users.json';
 
-function App() {
+const AppContent = () => {
   const [currentUser, setCurrentUser] = useState(() => {
     const savedUser = localStorage.getItem('vidyalink_user');
     return savedUser ? JSON.parse(savedUser) : null;
@@ -26,8 +27,6 @@ function App() {
       const savedUsers = localStorage.getItem('vidyalink_users');
       return savedUsers ? JSON.parse(savedUsers) : initialUsers;
   });
-  // The enrolledCourses state is now initialized as an empty array
-  // and will be populated based on the logged-in user.
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   
   const [messages, setMessages] = useState(() => {
@@ -38,6 +37,16 @@ function App() {
     const savedNotifications = localStorage.getItem('vidyalink_notifications');
     return savedNotifications ? JSON.parse(savedNotifications) : [];
   });
+  
+  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
 
   useEffect(() => {
     if (currentUser) {
@@ -49,17 +58,15 @@ function App() {
     }
   }, [currentUser]);
   
-  // *** FIX: Load user-specific enrolled courses when the user logs in or changes ***
   useEffect(() => {
     if (currentUser) {
       const allEnrollments = JSON.parse(localStorage.getItem('vidyalink_enrolled_by_user')) || {};
       setEnrolledCourses(allEnrollments[currentUser.username] || []);
     } else {
-      setEnrolledCourses([]); // Clear enrolled courses on logout
+      setEnrolledCourses([]);
     }
   }, [currentUser]);
 
-  // *** FIX: Save enrolled courses to a user-specific key in localStorage ***
   useEffect(() => {
     if (currentUser && currentUser.username) {
       const allEnrollments = JSON.parse(localStorage.getItem('vidyalink_enrolled_by_user')) || {};
@@ -94,12 +101,21 @@ function App() {
     }, 2000);
     return () => clearInterval(interval);
   }, []);
+  
+  const showLoader = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  };
 
   const handleLogin = (user) => {
+    showLoader();
     setCurrentUser(user);
   };
 
   const handleLogout = () => {
+    showLoader();
     setCurrentUser(null);
   };
 
@@ -116,21 +132,23 @@ function App() {
   };
 
   const handleSignUp = (newUser) => {
+    showLoader();
     setUsers(prevUsers => [...prevUsers, newUser]);
   };
 
-  // *** FIX: Added a check to prevent tutors from enrolling in their own course ***
   const handleEnroll = (course) => {
     if (currentUser && course.tutorId === currentUser.username) {
       alert("You cannot enroll in a course you created.");
       return;
     }
     if (!enrolledCourses.find(c => c.id === course.id)) {
+      showLoader();
       setEnrolledCourses([...enrolledCourses, course]);
     }
   };
 
   const handleUnenroll = (courseId) => {
+    showLoader();
     setEnrolledCourses(enrolledCourses.filter(course => course.id !== courseId));
   };
 
@@ -177,6 +195,7 @@ function App() {
   };
   
   const handleUpdateUser = (updatedUser) => {
+      showLoader();
       setCurrentUser(updatedUser);
       setUsers(prevUsers =>
           prevUsers.map(user =>
@@ -185,10 +204,10 @@ function App() {
       );
   };
 
-
   return (
-    <Router>
-      <Navbar isLoggedIn={isLoggedIn} notifications={notifications.filter(n => n.recipientId === currentUser?.username && !n.read)} currentUser={currentUser} courses={courses} />
+    <>
+      {isLoading && <Loader />}
+      <Navbar isLoggedIn={isLoggedIn} notifications={notifications.filter(n => n.recipientId === currentUser?.username && !n.read)} currentUser={currentUser} courses={courses} showLoader={showLoader} />
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -226,6 +245,14 @@ function App() {
           />
         </Routes>
       </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
