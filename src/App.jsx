@@ -31,6 +31,10 @@ function App() {
     const savedMessages = localStorage.getItem('vidyalink_messages');
     return savedMessages ? JSON.parse(savedMessages) : {};
   });
+  const [notifications, setNotifications] = useState(() => {
+    const savedNotifications = localStorage.getItem('vidyalink_notifications');
+    return savedNotifications ? JSON.parse(savedNotifications) : [];
+  });
 
   useEffect(() => {
     if (currentUser) {
@@ -49,6 +53,24 @@ function App() {
   useEffect(() => {
     localStorage.setItem('vidyalink_messages', JSON.stringify(messages));
   }, [messages]);
+
+  useEffect(() => {
+    localStorage.setItem('vidyalink_notifications', JSON.stringify(notifications));
+  }, [notifications]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const savedMessages = localStorage.getItem('vidyalink_messages');
+      if (savedMessages) {
+        setMessages(JSON.parse(savedMessages));
+      }
+      const savedNotifications = localStorage.getItem('vidyalink_notifications');
+      if (savedNotifications) {
+        setNotifications(JSON.parse(savedNotifications));
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogin = (user) => {
     setCurrentUser(user);
@@ -90,25 +112,35 @@ function App() {
       [courseId]: [...(prev[courseId] || []), message]
     }));
 
-    // Add a notification for the tutor
     const course = courses.find(c => c.id === courseId);
     if (course && currentUser.username !== course.tutorId) {
-      const tutor = users.find(u => u.username === course.tutorId);
-      if (tutor) {
-        const newNotification = {
-          courseId,
-          studentId: currentUser.username,
-          message: message.text,
-        };
-        // This part would ideally be an API call to update the tutor's notifications
-        console.log("New notification for tutor:", newNotification);
-      }
+      const newNotification = {
+        id: Date.now(),
+        courseId,
+        studentId: currentUser.username,
+        tutorId: course.tutorId,
+        message: message.text,
+        read: false,
+      };
+      setNotifications(prev => [newNotification, ...prev]);
     }
+  };
+
+  const handleClearNotifications = (tutorId, courseId, studentId) => {
+    setNotifications(prev => prev.filter(n => {
+      if (courseId && studentId) {
+        return !(n.courseId === courseId && n.studentId === studentId && n.tutorId === tutorId);
+      }
+      if (tutorId) {
+        return n.tutorId !== tutorId;
+      }
+      return true;
+    }));
   };
 
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} notifications={currentUser ? users.find(u => u.username === currentUser.username)?.notifications : []} />
+      <Navbar isLoggedIn={isLoggedIn} notifications={notifications.filter(n => n.tutorId === currentUser?.username && !n.read)} />
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -137,12 +169,12 @@ function App() {
           
           <Route 
             path="/profile" 
-            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} onDeleteCourse={handleDeleteCourse} enrolledCourses={enrolledCourses} onUnenroll={handleUnenroll} /> : <Navigate to="/login" />} 
+            element={isLoggedIn ? <ProfilePage user={currentUser} onLogout={handleLogout} courses={courses} onDeleteCourse={handleDeleteCourse} enrolledCourses={enrolledCourses} onUnenroll={handleUnenroll} notifications={notifications.filter(n => n.tutorId === currentUser?.username && !n.read)} onClearNotifications={handleClearNotifications} /> : <Navigate to="/login" />} 
           />
 
           <Route 
             path="/tutor-chat/:courseId"
-            element={isLoggedIn ? <TutorChatPage messages={messages} onSendMessage={handleSendMessage} currentUser={currentUser} courses={courses} /> : <Navigate to="/login" />}
+            element={isLoggedIn ? <TutorChatPage messages={messages} onSendMessage={handleSendMessage} currentUser={currentUser} courses={courses} onClearNotifications={handleClearNotifications} notifications={notifications} /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

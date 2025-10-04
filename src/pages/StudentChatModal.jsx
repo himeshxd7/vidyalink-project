@@ -9,6 +9,7 @@ const StudentChatModal = ({ tutorId, courseId, messages, onSendMessage, onClose,
 
     const message = {
       sender: currentUser.username,
+      recipient: tutorId,
       text: newMessage,
       timestamp: new Date().toISOString(),
     };
